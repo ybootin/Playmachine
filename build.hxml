@@ -1,1 +1,23 @@
-build.hxml
+-js bin/playMachine.js
+-main brix.core.Application
+-debug
+-cp lib/Brix/src
+-cp lib/Cocktail
+-cp src
+--macro brix.core.Builder.create('templates/player.html')
+-D embedHtml
+-D noAutoStart
+-D haxeJSON
+-D stopOnError
+--next
+-swf bin/playMachine.swf
+-main brix.core.Application
+-debug
+-cp lib/Brix/src
+-cp lib/Cocktail
+-cp src
+--remap js:cocktail
+--macro brix.core.Builder.create('templates/player.html')
+-D embedHtml
+-D haxeJSON
+-D stopOnError

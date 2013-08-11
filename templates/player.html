@@ -3,57 +3,73 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
         <title>HxPlayMachine</title>
-        <script data-slp-use="slplayer.ui.group.Group"></script>
-        <script data-slp-use="playmachine.audio.AudioManager"></script>
-         <script data-slp-use="playmachine.core.CocktailConfig"></script>
+        <script data-slp-use="brix.component.group.Group"></script>
          <link href="style.css" type="text/css" rel="stylesheet" />
     </head>
 
     <body>
-        <div class="playMachine Group StyleManager">
-            <div class="CocktailConfig"></div>
+        <div class="playMachine Group StyleManager PlaylistManager">
+            <div class="Cocktail"></div>
             <div class="AudioManager"></div>
 
             <div class="Header">
-                <div class="background"></div>
-            	<div class="LangSelector"></div>
-            	<div class="title"></div>
-            	<div class="link"><a href="http://www.toonzshop.com" target="_blank">www.toonzshop.com</a></div>
+                <div class="extra"></div>
+                <div class="LangSelector"></div>
+                <div class="title"></div>
+                <div class="link"><a href="http://www.toonzshop.com" target="_blank">www.toonzshop.com</a></div>
             </div>
 
             <div class="Body">
-            	<div class="LeftCol">
-            		<div class="Share"> 
-            			<div class="shareTitle">SHARE</div>
-            			<div class="facebook"></div>
-            			<div class="embed"></div>
-            		</div>
-            		<div class="TrackImage"></div>
-            		<div class="RateButton"></div>
-            		<div class="commentButton"></div>
-            		<div class="rate"></div>
+                <div class="LeftCol">
+                    <div class="Share">
+                        <div class="shareTitle">SHARE</div>
+                        <div class="facebook"></div>
+                        <div class="embed"></div>
+                    </div>
+                    <div class="TrackImage"></div>
+                    <div class="RateButton"></div>
+                    <div class="CommentButton"></div>
+                    <div class="TrackRate"></div>
 
-            		<div class="AddToCartButton"></div>
-            	</div>
-            	<div class="mainCol">
-            		<div class="TabBar">
-            			<div class="mainBar"></div>
-            			<div class="secondaryBar"></div>
-            		</div>
-            		<div class="PanelContainer"></div>
-            	</div>
+                    <div class="AddToCartButton"></div>
+                </div>
+                <div class="mainCol">
+                    <div class="TabBar">
+                        <div class="mainBar">
+                            <div class="playlistButton button playlist"></div>
+                            <div class="commentButton button release"></div>
+                            <div class="infoButton button comment"></div>
+                            <div class="cartButton button cart">
+                        </div>
+                        <div class="secondaryBar">
+                            <div class="playlist bar">
+                                <div class="loadButton"></div>
+                                <div class="saveButton"></div>
+                                <div class="deleteButton"></div>
+                                <div class="clearButton"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="TabContainer">
+                        <div class="PlaylistPanel playlist"></div>
+                        <div class="TrackPanel release"></div>
+                        <div class="CommentPanel comment"></div>
+                        <div class="CartPanel cart"></div>
+                    </div>
+                </div>
+                </div>
             </div>
 
             <div class="Footer">
-                <div class="background"></div>
-            	<div class="ControlBar">
-            		<div class="previousButton"></div>
-            		<div class="playPauseButton play"></div>
-            		<div class="forwardButton"></div>
-            		<div class="SeekBar"></div>
-            		<div class="muteButton"></div>
-            		<div class="soundLevel"></div>
-            	</div>
+                <div class="extra"></div>
+                <div class="ControlBar">
+                    <div class="previousButton"></div>
+                    <div class="playPauseButton play"></div>
+                    <div class="forwardButton"></div>
+                    <div class="SeekBar"></div>
+                    <div class="muteButton"></div>
+                    <div class="soundLevel"></div>
+                </div>
             </div>
         </div>
     </body>
