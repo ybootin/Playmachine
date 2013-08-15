@@ -23,10 +23,12 @@
                 <div class="LeftCol">
                     <div class="Share">
                         <div class="shareTitle">SHARE</div>
-                        <div class="facebook"></div>
-                        <div class="embed"></div>
+                        <div class="facebook button"></div>
+                        <div class="embed button"></div>
                     </div>
-                    <div class="TrackImage"></div>
+                    <div class="TrackImage">
+                        <img src="http://static.toonzshop.com/thumbnails/conf/upload/shoponline/produits/I/INKALINK_17/inkalink-17.jpg-92x92-adaptative.jpg" />
+                    </div>
                     <div class="RateButton"></div>
                     <div class="CommentButton"></div>
                     <div class="TrackRate"></div>
@@ -34,29 +36,60 @@
                     <div class="AddToCartButton"></div>
                 </div>
                 <div class="mainCol">
-                    <div class="TabBar">
-                        <div class="mainBar">
-                            <div class="playlistButton button playlist"></div>
-                            <div class="commentButton button release"></div>
-                            <div class="infoButton button comment"></div>
-                            <div class="cartButton button cart">
+                    <div class="TabComponent">
+                        <div class="TabBar">
+                            <div class="mainBar bar">
+                                <div class="playlistButton button playlist active"></div>
+                                <div class="commentButton button release"></div>
+                                <div class="infoButton button comment"></div>
+                                <div class="cartButton button cart"></div>
+                            </div>
+                            <div class="secondaryBar">
+                                <div class="playlist bar">
+                                    <div class="loadButton button"></div>
+                                    <div class="saveButton button"></div>
+                                    <div class="deleteButton button"></div>
+                                    <div class="clearButton button"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="secondaryBar">
-                            <div class="playlist bar">
-                                <div class="loadButton"></div>
-                                <div class="saveButton"></div>
-                                <div class="deleteButton"></div>
-                                <div class="clearButton"></div>
+                        <div class="TabContainer">
+                            <div class="PlaylistPanel playlist active panel">
+                                <div class="track">
+                                    <div class="playingIco"></div>
+                                    <div class="title">01 - Track title - artists</div>
+                                    <div class="remove button"></div>
+                                </div>
+                            </div>
+                            <div class="TrackPanel release panel">
+                                <div class="title"></div>
+                                <div class="info"></div>
+                                <div class="artists"></div>
+                                <div class="labels"></div>
+                                <div class="style"></div>
+                                <div class="description"></div>
+                            </div>
+                            <div class="CommentPanel comment panel">
+                                <div class="addCommentButton"></div>
+                                <div class="nbComments"></div>
+                                <div class="commentsContainer"></div>
+                            </div>
+                            <div class="CartPanel cart panel">
+                                <div class="itemContainer"></div>
+                                <div class="totalContainer">
+                                    <div class="total">TOTAL</div>
+                                    <div class="price">
+                                        <span>10€</span>
+                                        <div class="value"></div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <div class="addToPlaylistButton">::translations.addPlaylistToCart::</div>
+                                    <div class="orderButton">::translations.order::</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="TabContainer">
-                        <div class="PlaylistPanel playlist"></div>
-                        <div class="TrackPanel release"></div>
-                        <div class="CommentPanel comment"></div>
-                        <div class="CartPanel cart"></div>
-                    </div>
-                </div>
                 </div>
             </div>
 
@@ -66,9 +99,16 @@
                     <div class="previousButton"></div>
                     <div class="playPauseButton play"></div>
                     <div class="forwardButton"></div>
-                    <div class="SeekBar"></div>
-                    <div class="muteButton"></div>
-                    <div class="soundLevel"></div>
+                    <div class="SeekBar">
+                        <div class="buffered progress"></div>
+                        <div class="played progress">
+                            <a class="knob" href="#"></a>
+                        </div>
+                    </div>
+                    <div class="muteButton button"></div>
+                    <div class="soundLevel">
+                        <div class="knob"></div>
+                    </div>
                 </div>
             </div>
         </div>
