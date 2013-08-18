@@ -3,15 +3,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
         <title>HxPlayMachine</title>
-        <script data-slp-use="brix.component.group.Group"></script>
-         <link href="style.css" type="text/css" rel="stylesheet" />
+        <script data-slp-use="slplayer.component.group.Group"></script>
+        <script data-slp-use="playmachine.style.StyleManager"></script>
+        <script data-slp-use="playmachine.audio.AudioManager"></script>
+        <script data-slp-use="playmachine.audio.PlaylistManager"></script>
+        <script data-slp-use="playmachine.ui.PlaylistPanel"></script>
+        <link href="styles.css" type="text/css" rel="stylesheet" />
     </head>
 
     <body>
         <div class="playMachine Group StyleManager PlaylistManager">
             <div class="Cocktail"></div>
-            <div class="AudioManager"></div>
-
+            <div class="AudioManager">
+                <audio class="audio">not supported !</audio>
+            </div>
             <div class="Header">
                 <div class="extra"></div>
                 <div class="LangSelector"></div>
@@ -55,9 +60,9 @@
                         </div>
                         <div class="TabContainer">
                             <div class="PlaylistPanel playlist active panel">
-                                <div class="track">
+                                <div class="track" id="track::id::">
                                     <div class="playingIco"></div>
-                                    <div class="title">01 - Track title - artists</div>
+                                    <div class="title">::title::</div>
                                     <div class="remove button"></div>
                                 </div>
                             </div>
