@@ -1,20 +1,32 @@
 package playmachine.audio;
 
+import application.core.BaseComponent;
+import application.helpers.HtmlDomHelper;
+using application.helpers.HtmlDomHelper;
+
+import playmachine.event.Events;
+import playmachine.data.Track;
+
+import js.Dom;
+import js.Lib;
+
 class AudioManager extends BaseComponent
 {
     var audio:HtmlDom;
 
-    public function init():Void
+    override public function init():Void
     {
-        audio = rootElement.getElementByName('audio');
+        super.init();
+
+        audio = rootElement.getElementByClassName('audio');
 
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
     }
 
-    private function onPlayRequest(e:Event):Void
+    private function onPlayRequest(e:CustomEvent):Void
     {
         var t:Track = cast(e.detail);
         audio.setAttribute('src',t.file);
-        audio.play();
+        untyped audio.play();
     }
 }

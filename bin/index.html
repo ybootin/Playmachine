@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://cdn.dsbn.org/js/json/json-2.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script src="playMachine.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        //the app base data
+        var data = {};
+
+        //init the JS app
+        playMachine.init(document.getElementById('container-js'),data);
+
+        //init the flash app
+        swfobject.embedSWF(
+            'playMachine.swf',
+            'swf',
+            "100%",
+            "100%",
+            '10.2.0',
+            null,
+            {
+
+                //'init': escape(JSON.stringify(data))
+            },
+            {
+                'allowFullScreen': true,
+                'allowScriptAccess': 'always',
+                'wmode': 'direct',
+                'scale': 'exactfit'
+            },
+            {
+                'bgcolor' : '#FFFFFF',
+                'style':"background-color:#FFFFFF"
+            }
+        );
+    }
+    </script>
+    <style>
+        body {
+            margin:0px;
+            padding:0px;
+        }
+        .container {
+            display:inline-block;
+            width:48%;
+            height:400px;
+            border:1px solid #000000;
+            vertical-align:top;
+        }
+    </style>
+
+  </head>
+  <body>
+    <div id="application">
+        <div id="container-js" class="container"></div>
+        <div id="container-swf" class="container">
+            <div id="swf"></div>
+        </div>
+    </div>
+  </body>
+</html>

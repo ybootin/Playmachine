@@ -1,4 +1,4 @@
-package playchine.helper;
+package playchine.helpers;
 
 class HashHelper
 {
