@@ -1,6 +1,3 @@
-[submodule "lib/Brix"]
-	path = lib/Brix
-	url = git@github.com:ybootin/Brix.git
-[submodule "lib/Cocktail"]
-	path = lib/Cocktail
-	url = git@github.com:ybootin/Cocktail.git
+[submodule "lib/BrixCocktailApplication"]
+	path = lib/BrixCocktailApplication
+	url = git@github.com:ybootin/BrixCocktailApplication.git
