@@ -7,6 +7,7 @@ class Events
 
     public static inline var ADD_TRACK_REQUEST:String = "addTrackRequest";
     public static inline var PLAY_TRACK_REQUEST:String = "playTrackRequest";
+    public static inline var REMOVE_TRACK_REQUEST:String = "removeTrackRequest";
 
 
 }

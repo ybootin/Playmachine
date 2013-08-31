@@ -6,5 +6,5 @@ playmachine: $(PLAYMACHINE)
 
 $(PLAYMACHINE): $(SOURCES) build.hxml
 	haxe build.hxml
-	#rm -Rf bin/images
-	#cp -Rf templates/images/ bin/images/
+	rm -Rf bin/images
+	cp -Rf templates/images/ bin/images/

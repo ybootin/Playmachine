@@ -14,6 +14,8 @@ class AudioManager extends BaseComponent
 {
     var audio:HtmlDom;
 
+    var track:Track;
+
     override public function init():Void
     {
         super.init();
@@ -21,12 +23,22 @@ class AudioManager extends BaseComponent
         audio = rootElement.getElementByClassName('audio');
 
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
+        groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+
+    }
+
+    private function onRemoveRequest(e:CustomEvent):Void
+    {
+        var t:Track = cast(e.detail);
+        if(t.id == track.id) {
+            untyped audio.pause();
+        }
     }
 
     private function onPlayRequest(e:CustomEvent):Void
     {
-        var t:Track = cast(e.detail);
-        audio.setAttribute('src',t.file);
+        track = cast(e.detail);
+        audio.setAttribute('src',track.file);
         untyped audio.play();
     }
 }
