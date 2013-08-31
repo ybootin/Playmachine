@@ -1,5 +1,5 @@
 -js bin/playMachine.js
--main slplayer.core.Application
+-main application.core.Application
 -debug
 -cp lib/BrixCocktailApplication/lib/Brix/src
 -cp lib/BrixCocktailApplication/lib/Cocktail/src
@@ -14,7 +14,7 @@
 -D stopOnError
 --next
 -swf bin/playMachine.swf
--main slplayer.core.Application
+-main application.core.Application
 -debug
 -cp lib/BrixCocktailApplication/lib/Brix/src
 -cp lib/BrixCocktailApplication/lib/Cocktail/src

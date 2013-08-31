@@ -1,5 +1,9 @@
 package playmachine.ui;
 
+import slplayer.ui.DisplayObject;
+import slplayer.ui.group.IGroupable;
+using slplayer.ui.group.IGroupable.Groupable;
+
 import playmachine.event.HTML5AudioEvents;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
@@ -24,14 +28,12 @@ class PlaylistPanel extends BaseComponent
         template = rootElement.innerHTML;
         rootElement.innerHTML = "";
 
-        rootElement.addEventListener(Events.ADD_TRACK_REQUEST,cast(addTrackRequestHandler),false);
-        // debug
-        // load the tracks resources, and add tracks
+        groupElement.addEventListener(Events.ADD_TRACK_REQUEST,cast(addTrackRequestHandler),false);
 
-        var data:Array<Dynamic> = Json.parse(Resource.getString('tracks'));
-
-        for(i in 0...data.length) {
-            dispatchEventOnGroup(Events.ADD_TRACK_REQUEST,data[i]);
+        if(data.tracks != null) {
+            for(i in 0...data.tracks.length) {
+                dispatchEventOnGroup(Events.ADD_TRACK_REQUEST,data.tracks[i]);
+            }
         }
     }
 
@@ -44,14 +46,13 @@ class PlaylistPanel extends BaseComponent
     private function addTrack(t:Track):Void
     {
         var tpl:Template = new Template(template);
-        rootElement.innerHTML += tpl.execute({title:t.title});
+        var e:HtmlDom = Lib.document.createElement('div');
+        e.innerHTML = tpl.execute({title:t.title,id:t.id});
 
-        var trackLine:HtmlDom = Lib.document.getElementById('track' + t.id);
-
-        var onTrackClick = function(e:Event):Void {
+        e.addEventListener('click',function(e:Event):Void {
             dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,t);
-        }
+        },false);
 
-        trackLine.addEventListener('click',onTrackClick,false);
+        rootElement.appendChild(e);
     }
 }
