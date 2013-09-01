@@ -95,7 +95,12 @@ class PlaylistPanel extends BaseComponent
 
     private function onPlayRequest(e:CustomEvent):Void
     {
+        if(currentTrack != null) {
+            getTrackElement(currentTrack).removeClass('current');
+        }
+
         currentTrack = cast(e.detail);
+        getTrackElement(currentTrack).addClass('current');
     }
 
     private function onAddTrackRequest(e:CustomEvent):Void
@@ -126,5 +131,10 @@ class PlaylistPanel extends BaseComponent
         }
 
         dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[prev]));
+    }
+
+    private function getTrackElement(t:Track):HtmlDom
+    {
+        return tracksElement.get(t.id).getElementByClassName('track');
     }
 }

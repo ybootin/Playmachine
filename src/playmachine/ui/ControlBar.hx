@@ -30,8 +30,6 @@ class ControlBar extends BaseComponent
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
 
-        trace(groupElement);
-
         forwardButton.addEventListener('click',function(e:Event):Void {
             dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
         },false);

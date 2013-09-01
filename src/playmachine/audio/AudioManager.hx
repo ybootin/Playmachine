@@ -39,13 +39,9 @@ class AudioManager extends BaseComponent
             var eventName:String = Reflect.field(HTML5AudioEvents,events[i]);
 
             audio.addEventListener(eventName,function(e:Event):Void {
-                dispatchEventOnGroup(e.type);
+                dispatchEventOnGroup(e.type, audio);
             },false);
         }
-
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,function(e:Event):Void {
-            trace(e.type);
-        },false);
     }
 
     private function onRemoveRequest(e:CustomEvent):Void
