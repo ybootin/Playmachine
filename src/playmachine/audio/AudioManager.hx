@@ -13,7 +13,7 @@ import js.Lib;
 
 class AudioManager extends BaseComponent
 {
-    var audio:HtmlDom;
+    var audio:Audio;
 
     var track:Track;
 
@@ -21,10 +21,12 @@ class AudioManager extends BaseComponent
     {
         super.init();
 
-        audio = rootElement.getElementByClassName('audio');
+        audio = cast(rootElement.getElementByClassName('audio'));
 
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
         groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        groupElement.addEventListener(Events.SEEK_REQUEST,cast(onSeekRequest),false);
+
         groupElement.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
             play();
         },false);
@@ -42,6 +44,14 @@ class AudioManager extends BaseComponent
                 dispatchEventOnGroup(e.type, audio);
             },false);
         }
+    }
+
+    private function onSeekRequest(e:CustomEvent):Void
+    {
+        var seekPercent:Float = cast(e.detail);
+
+        var audio:Audio = cast(rootElement.getElementByClassName('audio'));
+        audio.currentTime = audio.duration * (seekPercent / 100);
     }
 
     private function onRemoveRequest(e:CustomEvent):Void

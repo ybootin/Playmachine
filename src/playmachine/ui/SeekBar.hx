@@ -20,6 +20,7 @@ class SeekBar extends BaseComponent
 {
     private var currentTime:Float;
     private var totalTime:Float;
+    private var bufferPercent:Float;
 
     var played:HtmlDom;
     var buffered:HtmlDom;
@@ -29,10 +30,11 @@ class SeekBar extends BaseComponent
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
 
-        rootElement.addEventListener('click',onClick,false);
-
         played = rootElement.getElementByClassName('played');
         buffered = rootElement.getElementByClassName('buffered');
+
+        played.addEventListener('click',cast(onClick),false);
+        buffered.addEventListener('click',cast(onClick),false);
 
         reset();
     }
@@ -60,15 +62,30 @@ class SeekBar extends BaseComponent
     private function onBuffer(evt:CustomEvent):Void
     {
         var audioElement:Audio = cast(evt.detail);
-        var bufferPercent = audioElement.getBufferPercent();
+        bufferPercent = audioElement.getBufferPercent();
 
         if(bufferPercent > 0) {
             buffered.style.width = bufferPercent + "%";
         }
     }
 
-    private function onClick(evt:Event):Void
+    private function onClick(evt:MouseEvent):Void
     {
+        var target:HtmlDom = cast(evt.target);
 
+        var offset:Array<Int> = target.getOffset();
+        var realX:Float = evt.clientX - offset[0];
+        var percentClick:Float = realX / target.offsetWidth;
+        var isBufferBar:Bool = (target.className.indexOf('buffered') != -1);
+        var seekPercent:Float;
+
+        if(isBufferBar) {
+            seekPercent = percentClick * bufferPercent;
+        }
+        else {
+            seekPercent = (percentClick * 100) * (currentTime / totalTime);
+        }
+
+        dispatchEventOnGroup(Events.SEEK_REQUEST,seekPercent);
     }
 }

@@ -11,6 +11,7 @@ class Events
 
     public static inline var PLAY_REQUEST:String = "playRequest";
     public static inline var PAUSE_REQUEST:String = "pauseRequest";
+    public static inline var SEEK_REQUEST:String = "seekRequest";
 
 
 }
