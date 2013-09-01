@@ -20,10 +20,12 @@ class PlaylistPanel extends BaseComponent
      */
     private var template:String;
 
-    private var tracks:Hash<Track>;
+    private var tracks:IntHash<Track>;
     private var currentTrack:Track;
 
-    private var tracksElement:Hash<HtmlDom>;
+    private var tracksPosition:Array<Int>;
+
+    private var tracksElement:IntHash<HtmlDom>;
 
     override public function init():Void
     {
@@ -33,13 +35,15 @@ class PlaylistPanel extends BaseComponent
         template = rootElement.innerHTML;
         rootElement.innerHTML = "";
 
-        tracks = new Hash();
-        tracksElement = new Hash();
+        tracks = new IntHash();
+        tracksElement = new IntHash();
+        tracksPosition = [];
 
         groupElement.addEventListener(Events.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
         groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-
+        groupElement.addEventListener(Events.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
+        groupElement.addEventListener(Events.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
 
         // init the tracks
         if(data.tracks != null) {
@@ -56,7 +60,7 @@ class PlaylistPanel extends BaseComponent
         e.innerHTML = tpl.execute({title:t.title,id:t.id});
 
         var onTrackClick = function(evt:Event):Void {
-            if(tracks.exists(cast(t.id))) {
+            if(tracks.exists(t.id)) {
                 dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,t);
             }
         }
@@ -72,8 +76,9 @@ class PlaylistPanel extends BaseComponent
         e.addEventListener('click',onTrackClick,false);
 
         // add track to the stack
-        tracks.set(cast(t.id),t);
-        tracksElement.set(cast(t.id),e);
+        tracks.set(t.id,t);
+        tracksElement.set(t.id,e);
+        tracksPosition.push(t.id);
 
         rootElement.appendChild(e);
     }
@@ -82,8 +87,10 @@ class PlaylistPanel extends BaseComponent
     {
         var t:Track = cast(e.detail);
 
-        tracks.remove(cast(t.id));
-        rootElement.removeChild(tracksElement.get(cast(t.id)));
+        tracks.remove(t.id);
+        rootElement.removeChild(tracksElement.get(t.id));
+        tracksElement.remove(t.id);
+        tracksPosition.remove(t.id);
     }
 
     private function onPlayRequest(e:CustomEvent):Void
@@ -95,5 +102,29 @@ class PlaylistPanel extends BaseComponent
     {
         var t:Track = cast(e.detail);
         addTrack(t);
+    }
+
+    private function onNextRequest(e:Event):Void
+    {
+        var pos:Int = Lambda.indexOf(tracksPosition,currentTrack.id);
+
+        var next:Int = pos + 1;
+        if(next == tracksPosition.length) {
+            next = 0;
+        }
+
+        dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[next]));
+    }
+
+    private function onPreviousRequest(e:Event):Void
+    {
+        var pos:Int = Lambda.indexOf(tracksPosition,currentTrack.id);
+
+        var prev:Int = pos - 1;
+        if(prev < 0) {
+            prev = tracksPosition.length - 1;
+        }
+
+        dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[prev]));
     }
 }

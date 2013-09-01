@@ -15,10 +15,50 @@ import application.core.Logger;
 
 class ControlBar extends BaseComponent
 {
+    var playPauseButton:HtmlDom;
+    var previousButton:HtmlDom;
+    var forwardButton:HtmlDom;
+
+    private var playing:Bool;
 
     override public function init():Void
     {
+        playPauseButton = rootElement.getElementByClassName('playPauseButton');
+        previousButton = rootElement.getElementByClassName('previousButton');
+        forwardButton = rootElement.getElementByClassName('forwardButton');
 
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
+
+        trace(groupElement);
+
+        forwardButton.addEventListener('click',function(e:Event):Void {
+            dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
+        },false);
+
+        previousButton.addEventListener('click',function(e:Event):Void {
+            dispatchEventOnGroup(Events.PREVIOUS_TRACK_REQUEST);
+        },false);
+
+        playPauseButton.addEventListener('click',function(e:Event):Void {
+            if(playing) {
+                dispatchEventOnGroup(Events.PAUSE_REQUEST);
+            }
+            else {
+                dispatchEventOnGroup(Events.PLAY_REQUEST);
+            }
+        },false);
     }
 
+    private function onPlay(e:Event):Void
+    {
+        playing = true;
+        playPauseButton.addClass('playing');
+    }
+
+    private function onPause(e:Event):Void
+    {
+        playing = false;
+        playPauseButton.removeClass('playing');
+    }
 }

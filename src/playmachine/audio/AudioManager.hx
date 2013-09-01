@@ -6,6 +6,7 @@ using application.helpers.HtmlDomHelper;
 
 import playmachine.event.Events;
 import playmachine.data.Track;
+import playmachine.event.HTML5AudioEvents;
 
 import js.Dom;
 import js.Lib;
@@ -24,14 +25,36 @@ class AudioManager extends BaseComponent
 
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
         groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        groupElement.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
+            play();
+        },false);
+        groupElement.addEventListener(Events.PAUSE_REQUEST,function(e:Event):Void {
+            pause();
+        },false);
 
+        // redispatch all audio events
+        var events:Array<String> = Type.getClassFields(HTML5AudioEvents);
+
+        for(i in 0...events.length) {
+            var eventName:String = Reflect.field(HTML5AudioEvents,events[i]);
+
+            audio.addEventListener(eventName,function(e:Event):Void {
+                dispatchEventOnGroup(e.type);
+            },false);
+        }
+
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,function(e:Event):Void {
+            trace(e.type);
+        },false);
     }
 
     private function onRemoveRequest(e:CustomEvent):Void
     {
         var t:Track = cast(e.detail);
         if(t.id == track.id) {
-            untyped audio.pause();
+            audio.setAttribute('src','');
+            track = null;
+            pause();
         }
     }
 
@@ -39,6 +62,16 @@ class AudioManager extends BaseComponent
     {
         track = cast(e.detail);
         audio.setAttribute('src',track.file);
+        play();
+    }
+
+    private function play():Void
+    {
         untyped audio.play();
+    }
+
+    private function pause():Void
+    {
+        untyped audio.pause();
     }
 }

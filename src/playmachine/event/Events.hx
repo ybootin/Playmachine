@@ -9,5 +9,8 @@ class Events
     public static inline var PLAY_TRACK_REQUEST:String = "playTrackRequest";
     public static inline var REMOVE_TRACK_REQUEST:String = "removeTrackRequest";
 
+    public static inline var PLAY_REQUEST:String = "playRequest";
+    public static inline var PAUSE_REQUEST:String = "pauseRequest";
+
 
 }
