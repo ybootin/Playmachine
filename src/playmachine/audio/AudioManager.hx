@@ -7,9 +7,12 @@ using application.helpers.HtmlDomHelper;
 import playmachine.event.Events;
 import playmachine.data.Track;
 import playmachine.event.HTML5AudioEvents;
+import playmachine.core.Constants;
 
 import js.Dom;
 import js.Lib;
+
+import haxe.Timer;
 
 class AudioManager extends BaseComponent
 {
@@ -26,6 +29,7 @@ class AudioManager extends BaseComponent
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
         groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
         groupElement.addEventListener(Events.SEEK_REQUEST,cast(onSeekRequest),false);
+        groupElement.addEventListener(Events.VOLUME_REQUEST,cast(onVolumeRequest),false);
 
         groupElement.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
             play();
@@ -44,6 +48,21 @@ class AudioManager extends BaseComponent
                 dispatchEventOnGroup(e.type, audio);
             },false);
         }
+
+        //update volume, let the others components init, and handle volume change
+        Timer.delay(function():Void {
+            setVolume(Constants.DEFAULT_SOUND_LEVEL);
+        },500);
+    }
+
+    private function setVolume(volumePercent:Float):Void
+    {
+        audio.volume = volumePercent / 100;
+    }
+
+    private function onVolumeRequest(evt:CustomEvent):Void
+    {
+        setVolume(cast(evt.detail));
     }
 
     private function onSeekRequest(e:CustomEvent):Void
