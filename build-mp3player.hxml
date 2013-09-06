@@ -1,0 +1,6 @@
+-swf bin/mp3player.swf
+-main playmachine.application.MP3Player
+-debug
+-cp src
+-D stopOnError
+-swf-version 10.2

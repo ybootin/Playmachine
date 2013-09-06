@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script type="text/javascript">
+        //init the flash app
+        swfobject.embedSWF(
+            'mp3player.swf?handler=handlePlayerEvent',
+            'mp3player',
+            "10",
+            "10",
+            '10.2.0',
+            null,
+            {},
+            {
+                'allowFullScreen': true,
+                'allowScriptAccess': 'always',
+                'wmode': 'direct',
+                'scale': 'exactfit'
+            },
+            {
+                'bgcolor' : '#FFFFFF',
+                'style':"background-color:#FFFFFF"
+            },
+            onPlayerReady
+        );
+
+        var mp3player;
+
+        function onPlayerReady(evt) {
+            if(evt.success) {
+                console.log('success, player loaded');
+
+
+            }
+            else {
+                console.log('error on loading mp3player');
+            }
+        }
+        window.handlePlayerEvent = function(eventName,eventData) {
+            console.log('got a playerEvent ' + eventName, eventData);
+
+            switch(eventName) {
+                case 'playerReady':
+                    mp3player = document.getElementById('mp3player');
+
+                    mp3player.load("http://www.toonzshop.com/conf/upload/shoponline/produits/C/CMR04_CD/chinese_man_06_chinese_man_leo_le_bug_le_yan_chinese_man__5.mp3");
+
+                    break;
+                case "loadstart":
+                    mp3player.play();
+                    break;
+                case "ended":
+                    mp3player.load("http://www.toonzshop.com/conf/upload/shoponline/produits/C/CMR04_CD/chinese_man_06_chinese_man_leo_le_bug_le_yan_chinese_man__4.mp3");
+                    break;
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <h1>FLASH MP3Player test page</h1>
+    <p>Open javascript console to see player events. Click on the link bellow to control the player</p>
+    <div id="container-swf" class="container">
+        <a href="#" onclick="mp3player.pause()">pause</a><br />
+        <a href="#" onclick="mp3player.play()">play</a><br />
+        <a href="#" onclick="mp3player.setVolume(30)">volume 30</a><br />
+        <a href="#" onclick="mp3player.setVolume(90)">volume 90</a><br />
+        <a href="#" onclick="mp3player.setVolume(0)">mute</a><br />
+        <a href="#" onclick="mp3player.seek(10)">seek 10%</a><br />
+        <a href="#" onclick="mp3player.seek(50)">seek 50%</a><br />
+        <a href="#" onclick="mp3player.seek(99)">seek 99%</a><br />
+      <div id="mp3player"></div>
+    </div>
+  </body>
+</html>

@@ -31,3 +31,17 @@ class HTML5AudioEvents
     public static inline var AUDIO_DURATIONCHANGE:String = "durationchange";   //The duration attribute has just been updated.
     public static inline var AUDIO_VOLUMECHANGE:String = "volumechange";     //Either the volume attribute or the muted attribute has changed. Fired after the relevant attribute's setter has returned.
 }
+
+class HTML5AudioData
+{
+    public var volume:Float;
+    public var currentTime:Float;
+    public var duration:Float;
+    public var percentLoaded:Float;
+    public var percentPlayed:Float;
+
+    public function new()
+    {
+
+    }
+}
