@@ -83,7 +83,7 @@ class ControlBar extends BaseComponent
 
     private function onVolumeChange(evt:CustomEvent):Void
     {
-        var audio:Audio = cast(evt.detail);
+        var audio:HTML5AudioData = cast(evt.detail);
         volume = audio.volume * 100;
         trace('volume change ' + volume);
         muted = (volume == 0);

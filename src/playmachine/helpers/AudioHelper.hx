@@ -22,4 +22,9 @@ class AudioHelper
 
         return percent;
     }
+
+    public static function hasMP3(audioElt:Audio):Bool
+    {
+        return false; //!!(audio.canPlayType && audio.canPlayType('audio/mpeg;').replace(/no/, ''));
+    }
 }

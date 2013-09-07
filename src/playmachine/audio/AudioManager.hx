@@ -3,7 +3,8 @@ package playmachine.audio;
 import application.core.BaseComponent;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
-
+import playmachine.helpers.AudioHelper;
+using playmachine.helpers.AudioHelper;
 import playmachine.event.Events;
 import playmachine.data.Track;
 import playmachine.event.HTML5AudioEvents;
@@ -18,13 +19,20 @@ class AudioManager extends BaseComponent
 {
     var audio:Audio;
 
+    var flashPlayer:HtmlDom;
+
+    var playerReady:Bool;
+
     var track:Track;
+
+    var useFlashPlayer:Bool;
+
+    var audioData:HTML5AudioData;
 
     override public function init():Void
     {
         super.init();
 
-        audio = cast(rootElement.getElementByClassName('audio'));
 
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
         groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
@@ -38,15 +46,28 @@ class AudioManager extends BaseComponent
             pause();
         },false);
 
-        // redispatch all audio events
-        var events:Array<String> = Type.getClassFields(HTML5AudioEvents);
+        audioData = new HTML5AudioData();
 
-        for(i in 0...events.length) {
-            var eventName:String = Reflect.field(HTML5AudioEvents,events[i]);
+        audio = cast(rootElement.getElementByClassName('audio'));
 
-            audio.addEventListener(eventName,function(e:Event):Void {
-                dispatchEventOnGroup(e.type, audio);
-            },false);
+#if js
+        //Browser doesn't supper MP3
+        if(!audio.hasMP3()) {
+            appendFlashPlayer();
+        }
+#end
+
+        if(!useFlashPlayer) {
+            // redispatch all audio events
+            var events:Array<String> = Type.getClassFields(HTML5AudioEvents);
+
+            for(i in 0...events.length) {
+                var eventName:String = Reflect.field(HTML5AudioEvents,events[i]);
+
+                audio.addEventListener(eventName,function(e:Event):Void {
+                    dispatchEventOnGroup(e.type, getAudioData());
+                },false);
+            }
         }
 
         //update volume, let the others components init, and handle volume change
@@ -57,7 +78,11 @@ class AudioManager extends BaseComponent
 
     private function setVolume(volumePercent:Float):Void
     {
-        audio.volume = volumePercent / 100;
+        if(useFlashPlayer) {
+            untyped flashPlayer.setVolume(volumePercent / 100);
+        } else {
+            audio.volume = volumePercent / 100;
+        }
     }
 
     private function onVolumeRequest(evt:CustomEvent):Void
@@ -67,17 +92,23 @@ class AudioManager extends BaseComponent
 
     private function onSeekRequest(e:CustomEvent):Void
     {
-        var seekPercent:Float = cast(e.detail);
+        seek(cast(e.detail));
+    }
 
-        var audio:Audio = cast(rootElement.getElementByClassName('audio'));
-        audio.currentTime = audio.duration * (seekPercent / 100);
+    private function seek(percent:Float):Void
+    {
+        if(useFlashPlayer) {
+            untyped flashPlayer.seek(percent);
+        } else {
+            audio.currentTime = audio.duration * (percent / 100);
+        }
     }
 
     private function onRemoveRequest(e:CustomEvent):Void
     {
         var t:Track = cast(e.detail);
         if(t.id == track.id) {
-            audio.setAttribute('src','');
+            untyped useFlashPlayer ? flashPlayer.load("") : audio.setAttribute('src','');
             track = null;
             pause();
         }
@@ -86,17 +117,50 @@ class AudioManager extends BaseComponent
     private function onPlayRequest(e:CustomEvent):Void
     {
         track = cast(e.detail);
-        audio.setAttribute('src',track.file);
+        untyped useFlashPlayer ? flashPlayer.load(track.file) : audio.setAttribute('src',track.file);
         play();
     }
 
     private function play():Void
     {
-        untyped audio.play();
+        untyped useFlashPlayer ? flashPlayer.play() : audio.play();
     }
 
     private function pause():Void
     {
-        untyped audio.pause();
+        untyped useFlashPlayer ? flashPlayer.pause() : audio.pause();
+    }
+
+    private function appendFlashPlayer():Void
+    {
+        if(!useFlashPlayer) {
+            useFlashPlayer = true;
+
+            var jshandlerName:String = "playmachinejshandler";
+            var that = this;
+            untyped {
+                Lib.window.playmachinejshandler = function(eventName,eventData) {
+                    that.dispatchEventOnGroup(eventName,eventData);
+                };
+            }
+            flashPlayer = cast(Lib.document.createElement('object'));
+            flashPlayer.setAttribute('data','mp3player.swf?handler=' + jshandlerName);
+        }
+    }
+
+    private function getAudioData():HTML5AudioData
+    {
+        if(useFlashPlayer) {
+            return untyped cast(flashPlayer.getAudioData());
+        }
+        else {
+            audioData.volume = audio.volume;
+            audioData.currentTime = audio.currentTime;
+            audioData.duration = audio.duration;
+            audioData.percentLoaded = audio.getBufferPercent();
+            audioData.percentPlayed = Math.NaN; //to be implemented
+
+            return audioData;
+        }
     }
 }

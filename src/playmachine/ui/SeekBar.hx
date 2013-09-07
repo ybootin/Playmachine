@@ -47,25 +47,22 @@ class SeekBar extends BaseComponent
 
     private function onProgress(evt:CustomEvent):Void
     {
-        var audioElement:Audio = cast(evt.detail);
+        var audioElement:HTML5AudioData = cast(evt.detail);
 
-        currentTime = cast(audioElement.currentTime);
-        totalTime = cast(audioElement.duration);
+        currentTime = audioElement.currentTime;
+        totalTime = audioElement.duration;
 
-        var progressPercent:Float = (currentTime / totalTime) * 100;
-
-        if (progressPercent >= 0 && played != null) {
-            played.style.width = progressPercent + "%";
+        if (audioElement.percentPlayed >= 0 && played != null) {
+            played.style.width = audioElement.percentPlayed + "%";
         }
     }
 
     private function onBuffer(evt:CustomEvent):Void
     {
-        var audioElement:Audio = cast(evt.detail);
-        bufferPercent = audioElement.getBufferPercent();
+        var audioElement:HTML5AudioData = cast(evt.detail);
 
-        if(bufferPercent > 0) {
-            buffered.style.width = bufferPercent + "%";
+        if(audioElement.percentLoaded > 0) {
+            buffered.style.width = audioElement.percentLoaded + "%";
         }
     }
 
