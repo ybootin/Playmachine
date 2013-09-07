@@ -74,7 +74,7 @@ class MP3Player extends Sprite
     private var isExposed:Bool;
 
     /**
-     * HaXe bootstrap method
+     * HaXe bootstrap
      */
     public static function main():Void
     {
@@ -96,6 +96,7 @@ class MP3Player extends Sprite
 
         initExternalCallbacks();
 
+        // At this time we consider that player is ready to handle incoming request
         dispatchEventToExternal(PLAYER_READY_EVENT);
 
         var playbackTimer = new Timer(TIMEUPDATE_DELAY);
@@ -107,7 +108,7 @@ class MP3Player extends Sprite
      */
     public function load(url:String):Void
     {
-        // remove allready setted listener
+        // remove already setted listener
         if(audio != null) {
             audio.removeEventListener(Event.COMPLETE, onBufferFull);
             audio.removeEventListener(Event.ID3, id3Handler);
@@ -137,12 +138,15 @@ class MP3Player extends Sprite
         if(channel != null) {
             channel.stop();
         }
-        channel = audio.play((start > 0 ? start : null));
+        channel = audio.play((start > 0 ? start : lastPlayedTime));
         setVolume(volume);
 
         dispatchEventToExternal(HTML5AudioEvents.AUDIO_PLAY);
     }
 
+    /**
+     * Pause the playback
+     */
     public function pause():Void
     {
         channel.stop();
@@ -202,6 +206,7 @@ class MP3Player extends Sprite
      */
     private function checkPlayback():Void
     {
+        // keep this in try catch, because it's launch through a timer
         try {
             if (channel != null && channel.position != lastPlayedTime) {
                 lastPlayedTime = channel.position;
@@ -219,8 +224,9 @@ class MP3Player extends Sprite
     }
 
     /**
-     * Initiate the externals interface handler
-     * @return [description]
+     * Initiate the externals interface handler to control player with javascript
+     *
+     * the magic of this application ;)
      */
     private function initExternalCallbacks():Void
     {
@@ -238,8 +244,6 @@ class MP3Player extends Sprite
 
     /**
      * Dispatch HTML5 event to the javascript handler method
-     * @param  eventName [description]
-     * @return           [description]
      */
     private function dispatchEventToExternal(eventName:String):Void
     {
@@ -248,6 +252,9 @@ class MP3Player extends Sprite
         }
     }
 
+    /**
+     * Handle loaded buffer full
+     */
     private function onBufferFull(event:Event):Void
     {
         //no html5 event for this
