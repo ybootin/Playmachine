@@ -23,11 +23,6 @@ import playmachine.event.HTML5AudioEvents;
 class MP3Player extends Sprite
 {
     /**
-     * Dispatch when player is ready to play !
-     */
-    public static inline var PLAYER_READY_EVENT:String = "playerReady";
-
-    /**
      * Holds the default delay for sending timeupdate event
      */
     public static inline var TIMEUPDATE_DELAY:Int = 200;
@@ -74,6 +69,11 @@ class MP3Player extends Sprite
     private var isExposed:Bool;
 
     /**
+     * Activate debug trace
+     */
+    private static var debug:Bool;
+
+    /**
      * HaXe bootstrap
      */
     public static function main():Void
@@ -81,6 +81,9 @@ class MP3Player extends Sprite
         flash.Lib.current.stage.addChild(new MP3Player());
     }
 
+    /**
+     * Constructor
+     */
     public function new()
     {
         super();
@@ -90,6 +93,8 @@ class MP3Player extends Sprite
 
         jsEventHandler = flash.Lib.current.loaderInfo.parameters.handler;
 
+        debug = cast(flash.Lib.current.loaderInfo.parameters.debug);
+
         volume = Constants.DEFAULT_SOUND_LEVEL;
 
         lastPlayedTime = 0;
@@ -97,7 +102,7 @@ class MP3Player extends Sprite
         initExternalCallbacks();
 
         // At this time we consider that player is ready to handle incoming request
-        dispatchEventToExternal(PLAYER_READY_EVENT);
+        dispatchEventToExternal(HTML5AudioEvents.AUDIO_READY);
 
         var playbackTimer = new Timer(TIMEUPDATE_DELAY);
         playbackTimer.run = checkPlayback;
@@ -118,6 +123,9 @@ class MP3Player extends Sprite
             pause();
         }
 
+        // reset the last play time to start playback from begin
+        lastPlayedTime = 0;
+
         audio = new Sound();
 
         audio.addEventListener(Event.COMPLETE, onBufferFull);
@@ -133,15 +141,22 @@ class MP3Player extends Sprite
      * Play to the desired location
      * @param  start start time in millisecond
      */
-    public function play(?start:Float = 0):Void
+    public function play(?start:Null<Float> = null):Bool
     {
-        if(channel != null) {
-            channel.stop();
-        }
-        channel = audio.play((start > 0 ? start : lastPlayedTime));
-        setVolume(volume);
+        if(audio != null) {
+            if(channel != null) {
+                channel.stop();
+            }
 
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_PLAY);
+            channel = audio.play((start != null ? start : lastPlayedTime));
+            setVolume(volume);
+
+            dispatchEventToExternal(HTML5AudioEvents.AUDIO_PLAY);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -149,9 +164,12 @@ class MP3Player extends Sprite
      */
     public function pause():Void
     {
-        channel.stop();
+        if(channel != null) {
+            channel.stop();
+            channel = null;
 
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_PAUSE);
+            dispatchEventToExternal(HTML5AudioEvents.AUDIO_PAUSE);
+        }
     }
 
     /**
@@ -161,9 +179,12 @@ class MP3Player extends Sprite
     public function seek(percent:Float):Void
     {
         var cuePoint:Float = audio.length * percent / 100;
-        play(cuePoint);
 
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_SEEKED);
+        // dispatch event only if play success
+        if(play(cuePoint)) {
+            dispatchEventToExternal(HTML5AudioEvents.AUDIO_SEEKED);
+        }
+
     }
 
     /**
@@ -172,13 +193,19 @@ class MP3Player extends Sprite
      */
     public function setVolume(percent:Float):Void
     {
+        if(percent == volume) {
+            return;
+        }
+
         volume = percent;
 
-        var transform:SoundTransform = channel.soundTransform;
-        transform.volume = percent / 100;
-        channel.soundTransform = transform;
+        if(channel != null) {
+            var transform:SoundTransform = channel.soundTransform;
+            transform.volume = percent / 100;
+            channel.soundTransform = transform;
 
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_VOLUMECHANGE);
+            dispatchEventToExternal(HTML5AudioEvents.AUDIO_VOLUMECHANGE);
+        }
     }
 
     /**
@@ -213,7 +240,7 @@ class MP3Player extends Sprite
                 dispatchEventToExternal(HTML5AudioEvents.AUDIO_TIMEUPDATE);
 
                 var data:HTML5AudioData = getAudioData();
-                if(data.percentLoaded == 100 && audio.length == channel.position) {
+                if(data.percentLoaded == 100 && data.percentPlayed >= 99.9999) {
                     dispatchEventToExternal(HTML5AudioEvents.AUDIO_ENDED);
                 }
             }
@@ -269,6 +296,9 @@ class MP3Player extends Sprite
         dispatchEventToExternal(HTML5AudioEvents.AUDIO_LOADEDMETADATA);
     }
 
+    /**
+     * Audio error handler
+     */
     private function errorHandler(event:ErrorEvent):Void
     {
         error = event;
@@ -291,16 +321,17 @@ class MP3Player extends Sprite
      */
     public static function trace(msg : Dynamic, ?infos : haxe.PosInfos):Void
     {
-        if (infos != null) {
-            msg = infos.fileName + ':' + infos.lineNumber + ': ' + msg + ' (' + infos.className + '.' + infos.methodName + ')';
-        }
+        if(debug) {
+            if (infos != null) {
+                msg = infos.fileName + ':' + infos.lineNumber + ': ' + msg + ' (' + infos.className + '.' + infos.methodName + ')';
+            }
 
-        if (ExternalInterface.available) {
-            ExternalInterface.call('console.log', '[mp3player] ' + msg);
+            if (ExternalInterface.available) {
+                ExternalInterface.call('console.log', '[mp3player] ' + msg);
+            }
+            else {
+                trace('[mp3player] ' + msg);
+            }
         }
-        else {
-            trace('[mp3player] ' + msg);
-        }
-
     }
 }

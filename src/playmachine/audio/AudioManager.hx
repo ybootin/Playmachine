@@ -27,26 +27,13 @@ class AudioManager extends BaseComponent
 
     var useFlashPlayer:Bool;
 
-    var audioData:HTML5AudioData;
-
     override public function init():Void
     {
         super.init();
 
-
-        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        groupElement.addEventListener(Events.SEEK_REQUEST,cast(onSeekRequest),false);
-        groupElement.addEventListener(Events.VOLUME_REQUEST,cast(onVolumeRequest),false);
-
-        groupElement.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
-            play();
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_READY,function(evt:Event):Void {
+            initListeners();
         },false);
-        groupElement.addEventListener(Events.PAUSE_REQUEST,function(e:Event):Void {
-            pause();
-        },false);
-
-        audioData = new HTML5AudioData();
 
         audio = cast(rootElement.getElementByClassName('audio'));
 
@@ -68,6 +55,8 @@ class AudioManager extends BaseComponent
                     dispatchEventOnGroup(e.type, getAudioData());
                 },false);
             }
+
+            dispatchEventOnGroup(HTML5AudioEvents.AUDIO_READY, getAudioData());
         }
 
         //update volume, let the others components init, and handle volume change
@@ -85,6 +74,87 @@ class AudioManager extends BaseComponent
         }
     }
 
+    private function seek(percent:Float):Void
+    {
+        if(useFlashPlayer) {
+            untyped flashPlayer.seek(percent);
+        } else {
+            audio.currentTime = audio.duration * (percent / 100);
+        }
+    }
+
+    private function play():Void
+    {
+        untyped useFlashPlayer ? flashPlayer.play() : audio.play();
+    }
+
+    private function pause():Void
+    {
+        untyped useFlashPlayer ? flashPlayer.pause() : audio.pause();
+    }
+
+    private function appendFlashPlayer():Void
+    {
+        if(!useFlashPlayer) {
+            useFlashPlayer = true;
+
+            //remove html5 audio tag
+            rootElement.removeChild(audio);
+
+            var jshandlerName:String = "playmachinejshandler";
+            var that = this;
+            untyped {
+                Lib.window.playmachinejshandler = function(eventName,eventData) {
+
+                    trace('received ' + eventName + ' from MP3Player');
+
+                    if(eventName == HTML5AudioEvents.AUDIO_READY) {
+                        that.flashPlayer = Lib.document.getElementById("mp3player");
+                    }
+
+                    that.dispatchEventOnGroup(eventName,eventData);
+                };
+            }
+            rootElement.setAttribute('id',  'mp3player');
+            rootElement.appendSWF('mp3player.swf?handler=' + jshandlerName,10,10);
+        }
+    }
+
+    private function getAudioData():HTML5AudioData
+    {
+        if(useFlashPlayer) {
+            return untyped cast(flashPlayer.getAudioData());
+        }
+        else {
+            var audioData:HTML5AudioData = new HTML5AudioData();
+            audioData.volume = audio.volume;
+            audioData.currentTime = audio.currentTime;
+            audioData.duration = audio.duration;
+            audioData.percentLoaded = audio.getBufferPercent();
+            audioData.percentPlayed = Math.NaN; //to be implemented
+
+            return audioData;
+        }
+    }
+
+    private function initListeners():Void
+    {
+        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
+        groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        groupElement.addEventListener(Events.SEEK_REQUEST,cast(onSeekRequest),false);
+        groupElement.addEventListener(Events.VOLUME_REQUEST,cast(onVolumeRequest),false);
+
+        groupElement.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
+            play();
+        },false);
+        groupElement.addEventListener(Events.PAUSE_REQUEST,function(e:Event):Void {
+            pause();
+        },false);
+
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_ENDED,cast(onTrackEnded),false);
+
+    }
+
     private function onVolumeRequest(evt:CustomEvent):Void
     {
         setVolume(cast(evt.detail));
@@ -93,15 +163,6 @@ class AudioManager extends BaseComponent
     private function onSeekRequest(e:CustomEvent):Void
     {
         seek(cast(e.detail));
-    }
-
-    private function seek(percent:Float):Void
-    {
-        if(useFlashPlayer) {
-            untyped flashPlayer.seek(percent);
-        } else {
-            audio.currentTime = audio.duration * (percent / 100);
-        }
     }
 
     private function onRemoveRequest(e:CustomEvent):Void
@@ -121,46 +182,8 @@ class AudioManager extends BaseComponent
         play();
     }
 
-    private function play():Void
+    private function onTrackEnded(evt:Event):Void
     {
-        untyped useFlashPlayer ? flashPlayer.play() : audio.play();
-    }
-
-    private function pause():Void
-    {
-        untyped useFlashPlayer ? flashPlayer.pause() : audio.pause();
-    }
-
-    private function appendFlashPlayer():Void
-    {
-        if(!useFlashPlayer) {
-            useFlashPlayer = true;
-
-            var jshandlerName:String = "playmachinejshandler";
-            var that = this;
-            untyped {
-                Lib.window.playmachinejshandler = function(eventName,eventData) {
-                    that.dispatchEventOnGroup(eventName,eventData);
-                };
-            }
-            flashPlayer = cast(Lib.document.createElement('object'));
-            flashPlayer.setAttribute('data','mp3player.swf?handler=' + jshandlerName);
-        }
-    }
-
-    private function getAudioData():HTML5AudioData
-    {
-        if(useFlashPlayer) {
-            return untyped cast(flashPlayer.getAudioData());
-        }
-        else {
-            audioData.volume = audio.volume;
-            audioData.currentTime = audio.currentTime;
-            audioData.duration = audio.duration;
-            audioData.percentLoaded = audio.getBufferPercent();
-            audioData.percentPlayed = Math.NaN; //to be implemented
-
-            return audioData;
-        }
+        dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
     }
 }

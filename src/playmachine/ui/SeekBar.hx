@@ -27,14 +27,18 @@ class SeekBar extends BaseComponent
 
     override public function init():Void
     {
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
-
         played = rootElement.getElementByClassName('played');
         buffered = rootElement.getElementByClassName('buffered');
 
         played.addEventListener('click',cast(onClick),false);
         buffered.addEventListener('click',cast(onClick),false);
+
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
+        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
+
+        groupElement.addEventListener(Events.NEXT_TRACK_REQUEST,onTrackChange,false);
+        groupElement.addEventListener(Events.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
+        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,onTrackChange,false);
 
         reset();
     }
@@ -61,7 +65,9 @@ class SeekBar extends BaseComponent
     {
         var audioElement:HTML5AudioData = cast(evt.detail);
 
-        if(audioElement.percentLoaded > 0) {
+        bufferPercent = audioElement.percentLoaded;
+
+        if(bufferPercent > 0) {
             buffered.style.width = audioElement.percentLoaded + "%";
         }
     }
@@ -70,11 +76,10 @@ class SeekBar extends BaseComponent
     {
         var target:HtmlDom = cast(evt.target);
 
-        var offset:Array<Int> = target.getOffset();
-        var realX:Float = evt.clientX - offset[0];
-        var percentClick:Float = realX / target.offsetWidth;
+        var percentClick:Float = target.getPercentClick(evt);
         var isBufferBar:Bool = (target.className.indexOf('buffered') != -1);
         var seekPercent:Float;
+
 
         if(isBufferBar) {
             seekPercent = percentClick * bufferPercent;
@@ -84,5 +89,10 @@ class SeekBar extends BaseComponent
         }
 
         dispatchEventOnGroup(Events.SEEK_REQUEST,seekPercent);
+    }
+
+    private function onTrackChange(evt:Event):Void
+    {
+        reset();
     }
 }

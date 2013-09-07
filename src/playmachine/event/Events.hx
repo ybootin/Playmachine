@@ -14,5 +14,5 @@ class Events
     public static inline var SEEK_REQUEST:String = "seekRequest";
     public static inline var VOLUME_REQUEST:String = "volumeRequest";
 
-
+    public static inline var AUDIO_READY:String = "audioReady";
 }

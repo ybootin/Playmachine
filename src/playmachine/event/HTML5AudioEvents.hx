@@ -30,6 +30,10 @@ class HTML5AudioEvents
     public static inline var AUDIO_RATECHANGE:String = "ratechange";   //Either the defaultPlaybackRate or the playbackRate attribute has just been updated.
     public static inline var AUDIO_DURATIONCHANGE:String = "durationchange";   //The duration attribute has just been updated.
     public static inline var AUDIO_VOLUMECHANGE:String = "volumechange";     //Either the volume attribute or the muted attribute has changed. Fired after the relevant attribute's setter has returned.
+
+    // CUSTOM event
+    public static inline var AUDIO_READY:String = "audioReady";
+
 }
 
 class HTML5AudioData
