@@ -223,7 +223,7 @@ class MP3Player extends Sprite
         }
 
         data.currentTime = (channel != null ? (channel.position * data.percentLoaded / 100) : 0);
-        data.percentPlayed = lastPlayedTime / data.duration * 100;
+        data.percentPlayed = data.currentTime / data.duration * 100;
 
         return data;
     }

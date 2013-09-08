@@ -78,15 +78,10 @@ class SeekBar extends BaseComponent
 
         var percentClick:Float = target.getPercentClick(evt);
         var isBufferBar:Bool = (target.className.indexOf('buffered') != -1);
-        var seekPercent:Float;
 
-
-        if(isBufferBar) {
-            seekPercent = percentClick * bufferPercent;
-        }
-        else {
-            seekPercent = (percentClick * 100) * (currentTime / totalTime);
-        }
+        // use percent adapt for click on the playbar while loading not fully completed
+        var percentAdapt = (isBufferBar ? 1 : (currentTime / totalTime * (1 /(bufferPercent / 100))));
+        var seekPercent:Float = percentClick * 100 * percentAdapt;
 
         dispatchEventOnGroup(Events.SEEK_REQUEST,seekPercent);
     }

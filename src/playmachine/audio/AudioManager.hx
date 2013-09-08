@@ -106,8 +106,6 @@ class AudioManager extends BaseComponent
             untyped {
                 Lib.window.playmachinejshandler = function(eventName,eventData) {
 
-                    trace('received ' + eventName + ' from MP3Player');
-
                     if(eventName == HTML5AudioEvents.AUDIO_READY) {
                         that.flashPlayer = Lib.document.getElementById("mp3player");
                     }
