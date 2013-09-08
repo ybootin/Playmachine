@@ -13,4 +13,9 @@ class Track
      */
     public var file:String;
 
+    /**
+     * The absolute path to the track image
+     */
+    public var image:String;
+
 }

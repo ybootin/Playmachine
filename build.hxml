@@ -6,7 +6,6 @@
 -cp lib/BrixCocktailApplication/src
 -cp src
 --macro slplayer.core.Builder.create('templates/player.html')
--resource resources/tracks.json@tracks
 -resource templates/styles.css@styles
 -D embedHtml
 -D noAutoStart
@@ -21,7 +20,6 @@
 -cp lib/BrixCocktailApplication/src
 -cp src
 --macro slplayer.core.Builder.create('templates/player.html')
--resource resources/tracks.json@tracks
 -resource templates/styles.css@styles
 --remap js:cocktail
 -D embedHtml

@@ -1,6 +1,6 @@
 PLAYMACHINE=bin/playMachine.*
 MP3PLAYER=bin/mp3player.swf
-SOURCES=Makefile src/*/*.hx src/*/*/*.hx resources/* templates/*.html
+SOURCES=Makefile src/*/*.hx src/*/*/*.hx templates/*.html
 
 make: playmachine mp3player
 playmachine: $(PLAYMACHINE)
