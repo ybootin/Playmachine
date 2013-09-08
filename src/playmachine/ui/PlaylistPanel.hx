@@ -1,6 +1,7 @@
 package playmachine.ui;
 
 import playmachine.event.HTML5AudioEvents;
+import playmachine.data.AudioData;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
 import playmachine.data.Track;

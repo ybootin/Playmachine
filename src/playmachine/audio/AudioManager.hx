@@ -8,6 +8,7 @@ using playmachine.helpers.AudioHelper;
 import playmachine.event.Events;
 import playmachine.data.Track;
 import playmachine.event.HTML5AudioEvents;
+import playmachine.data.AudioData;
 import playmachine.core.Constants;
 
 import js.Dom;
@@ -118,13 +119,13 @@ class AudioManager extends BaseComponent
         }
     }
 
-    private function getAudioData():HTML5AudioData
+    private function getAudioData():AudioData
     {
         if(useFlashPlayer) {
             return untyped cast(flashPlayer.getAudioData());
         }
         else {
-            var audioData:HTML5AudioData = new HTML5AudioData();
+            var audioData:AudioData = new AudioData();
             audioData.volume = audio.volume;
             audioData.currentTime = audio.currentTime;
             audioData.duration = audio.duration;

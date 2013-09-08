@@ -1,37 +1,47 @@
 package playmachine.ui;
 
 import playmachine.event.HTML5AudioEvents;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
-import playmachine.data.Track;
+import playmachine.data.AudioData;
 import application.core.BaseComponent;
 import playmachine.event.Events;
 import js.Lib;
 import js.Dom;
-import haxe.Json;
-import haxe.Template;
-import haxe.Resource;
-import application.core.Logger;
+import application.helpers.HtmlDomHelper;
+using application.helpers.HtmlDomHelper;
 
-import playmachine.helpers.AudioHelper;
-using playmachine.helpers.AudioHelper;
-
+/**
+ * The seekBar UI component
+ */
 class SeekBar extends BaseComponent
 {
-    private var currentTime:Float;
-    private var totalTime:Float;
-    private var bufferPercent:Float;
+    /**
+     * Holds the last audioData object received from audio event
+     */
+    private var audioData:AudioData;
 
-    var played:HtmlDom;
-    var buffered:HtmlDom;
+    private var played:HtmlDom;
+    private var buffered:HtmlDom;
+
+    private var isDragging:Bool;
 
     override public function init():Void
     {
+        audioData = new AudioData();
+
         played = rootElement.getElementByClassName('played');
         buffered = rootElement.getElementByClassName('buffered');
 
+        reset();
+
         played.addEventListener('click',cast(onClick),false);
         buffered.addEventListener('click',cast(onClick),false);
+
+        played.addEventListener('mouseup',cast(onMouseUp),false);
+        buffered.addEventListener('mouseup',cast(onMouseUp),false);
+        played.addEventListener('mousedown',cast(onMouseDown),false);
+        buffered.addEventListener('mousedown',cast(onMouseDown),false);
+        played.addEventListener('mousemove',cast(onMouseMove),false);
+        buffered.addEventListener('mousemove',cast(onMouseMove),false);
 
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
@@ -39,51 +49,67 @@ class SeekBar extends BaseComponent
         groupElement.addEventListener(Events.NEXT_TRACK_REQUEST,onTrackChange,false);
         groupElement.addEventListener(Events.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
         groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,onTrackChange,false);
-
-        reset();
     }
 
     private function reset():Void
     {
-        played.style.width = "0%";
-        buffered.style.width = "0%";
+        setProgressPosition(0);
+        setBufferPositon(0);
+    }
+
+    private function setProgressPosition(percent:Float):Void 
+    {
+        played.style.width = percent + "%";
+    }
+
+    private function setBufferPositon(percent:Float):Void 
+    {
+        buffered.style.width = percent + "%";
     }
 
     private function onProgress(evt:CustomEvent):Void
     {
-        var audioElement:HTML5AudioData = cast(evt.detail);
+        audioData = cast(evt.detail);
 
-        currentTime = audioElement.currentTime;
-        totalTime = audioElement.duration;
-
-        if (audioElement.percentPlayed >= 0 && played != null) {
-            played.style.width = audioElement.percentPlayed + "%";
-        }
+        setProgressPosition(audioData.percentPlayed);
     }
 
     private function onBuffer(evt:CustomEvent):Void
     {
-        var audioElement:HTML5AudioData = cast(evt.detail);
+        audioData = cast(evt.detail);
 
-        bufferPercent = audioElement.percentLoaded;
-
-        if(bufferPercent > 0) {
-            buffered.style.width = audioElement.percentLoaded + "%";
-        }
+        setBufferPositon(audioData.percentLoaded);
     }
 
     private function onClick(evt:MouseEvent):Void
     {
         var target:HtmlDom = cast(evt.target);
 
-        var percentClick:Float = target.getPercentClick(evt);
         var isBufferBar:Bool = (target.className.indexOf('buffered') != -1);
 
         // use percent adapt for click on the playbar while loading not fully completed
-        var percentAdapt = (isBufferBar ? 1 : (currentTime / totalTime * (1 /(bufferPercent / 100))));
-        var seekPercent:Float = percentClick * 100 * percentAdapt;
+        var percentAdapt = (isBufferBar ? 1 : (audioData.currentTime / audioData.duration * (1 /(audioData.percentLoaded / 100))));
+        var seekPercent:Float = target.getPercentClick(evt) * 100 * percentAdapt;
 
         dispatchEventOnGroup(Events.SEEK_REQUEST,seekPercent);
+    }
+
+    private function onMouseDown(evt:MouseEvent):Void 
+    {
+        isDragging = true;
+        onClick(evt);
+    }
+
+    private function onMouseUp(evt:MouseEvent):Void 
+    {
+        isDragging = false;
+    }
+
+    private function onMouseMove(evt:MouseEvent):Void 
+    {
+        if (isDragging) {
+            onClick(evt);
+        }
     }
 
     private function onTrackChange(evt:Event):Void

@@ -36,16 +36,3 @@ class HTML5AudioEvents
 
 }
 
-class HTML5AudioData
-{
-    public var volume:Float;
-    public var currentTime:Float;
-    public var duration:Float;
-    public var percentLoaded:Float;
-    public var percentPlayed:Float;
-
-    public function new()
-    {
-
-    }
-}

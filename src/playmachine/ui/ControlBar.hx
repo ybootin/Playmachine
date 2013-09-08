@@ -1,6 +1,7 @@
 package playmachine.ui;
 
 import playmachine.event.HTML5AudioEvents;
+import playmachine.data.AudioData;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
 import playmachine.data.Track;
@@ -83,7 +84,7 @@ class ControlBar extends BaseComponent
 
     private function onVolumeChange(evt:CustomEvent):Void
     {
-        var audio:HTML5AudioData = cast(evt.detail);
+        var audio:AudioData = cast(evt.detail);
         volume = audio.volume * 100;
         trace('volume change ' + volume);
         muted = (volume == 0);

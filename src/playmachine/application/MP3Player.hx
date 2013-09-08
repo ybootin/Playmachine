@@ -14,6 +14,7 @@ import haxe.Timer;
 
 import playmachine.core.Constants;
 import playmachine.event.HTML5AudioEvents;
+import playmachine.data.AudioData;
 
 /**
  * A simple MP3 player that work like html5 audio tag using flash ExternalInterface
@@ -211,9 +212,9 @@ class MP3Player extends Sprite
     /**
      * The standard html5 audio object, shared with the playmachine
      */
-    public function getAudioData():HTML5AudioData
+    public function getAudioData():AudioData
     {
-         var data = new HTML5AudioData();
+         var data = new AudioData();
         data.volume = volume;
         data.percentLoaded = (audio != null ? (audio.bytesLoaded / audio.bytesTotal * 100) : 0);
         data.duration = (audio != null ? audio.length : Math.NaN);
@@ -239,7 +240,7 @@ class MP3Player extends Sprite
                 lastPlayedTime = channel.position;
                 dispatchEventToExternal(HTML5AudioEvents.AUDIO_TIMEUPDATE);
 
-                var data:HTML5AudioData = getAudioData();
+                var data:AudioData = getAudioData();
                 if(data.percentLoaded == 100 && data.percentPlayed >= 99.9999) {
                     dispatchEventToExternal(HTML5AudioEvents.AUDIO_ENDED);
                 }
