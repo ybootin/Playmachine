@@ -69,7 +69,7 @@ class AudioManager extends BaseComponent
     private function setVolume(volumePercent:Float):Void
     {
         if(useFlashPlayer) {
-            untyped flashPlayer.setVolume(volumePercent / 100);
+            untyped flashPlayer.setVolume(volumePercent);
         } else {
             audio.volume = volumePercent / 100;
         }

@@ -13,6 +13,7 @@ import haxe.Json;
 import haxe.Template;
 import haxe.Resource;
 import application.core.Logger;
+import playmachine.core.Constants;
 
 class ControlBar extends BaseComponent
 {
@@ -21,30 +22,29 @@ class ControlBar extends BaseComponent
     private var forwardButton:HtmlDom;
     private var muteButton:HtmlDom;
     private var soundLevel:HtmlDom;
-    private var soundKnob:HtmlDom;
 
     private var playing:Bool;
 
     private var volume:Float;
-    private var muted:Bool;
     private var volumeBeforeMute:Float;
 
     private var soundDragging:Bool;
 
     override public function init():Void
     {
+        volume = Constants.DEFAULT_SOUND_LEVEL;
+
         playPauseButton = rootElement.getElementByClassName('playPauseButton');
         previousButton = rootElement.getElementByClassName('previousButton');
         forwardButton = rootElement.getElementByClassName('forwardButton');
         muteButton = rootElement.getElementByClassName('muteButton');
-        soundLevel = rootElement.getElementByClassName('level');
-        soundKnob = rootElement.getElementByClassName('knob');
+        soundLevel = rootElement.getElementByClassName('soundLevel');
 
+        updateSoundLevel();
 
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
         groupElement.addEventListener(HTML5AudioEvents.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
-
 
         forwardButton.addEventListener('click',function(e:Event):Void {
             dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
@@ -55,39 +55,57 @@ class ControlBar extends BaseComponent
         },false);
 
         muteButton.addEventListener('click',function(e:Event):Void {
-            if(!muted) {
-                volumeBeforeMute = volume;
-                sendVolumeRequest(0);
-            }
-            else
-            {
-                trace(volumeBeforeMute);
-                sendVolumeRequest(volumeBeforeMute);
-            }
+            sendVolumeRequest((volume <= 0) ? volumeBeforeMute : 0);
         },false);
 
         playPauseButton.addEventListener('click',function(e:Event):Void {
-            if(playing) {
-                dispatchEventOnGroup(Events.PAUSE_REQUEST);
-            }
-            else {
-                dispatchEventOnGroup(Events.PLAY_REQUEST);
-            }
+            dispatchEventOnGroup(playing ? Events.PAUSE_REQUEST : Events.PLAY_REQUEST);
         },false);
 
-        soundLevel.addEventListener('mousedown', onSoundDown, false);
-        soundLevel.addEventListener('click', onSoundClick, false);
-        Lib.document.addEventListener('mouseup', cast(onSoundUp), false);
-        Lib.document.addEventListener('mousemove', cast(onSoundMove), false);
+        soundLevel.addEventListener('mousedown', cast(onSoundDown), false);
+        soundLevel.addEventListener('click', cast(onSoundClick), false);
+        soundLevel.addEventListener('mouseup', cast(onSoundUp), false);
+        soundLevel.addEventListener('mousemove', cast(onSoundMove), false);
 
     }
+
+    private function updateSoundLevel():Void
+    {
+        (volume == 0) ? muteButton.addClass('muted') : muteButton.removeClass('muted');
+
+        var level:HtmlDom = soundLevel.getElementByClassName('level');
+        var knob:HtmlDom = soundLevel.getElementByClassName('knob');
+
+        level.style.width = volume + "%";
+
+        var minPos = 0;
+        var maxPos = soundLevel.offsetWidth - (knob.offsetWidth / 2);
+
+        var newPos:Float = level.offsetWidth - (knob.offsetWidth / 2);
+        if(newPos < minPos) {
+            newPos = minPos;
+        }
+        if(newPos >= maxPos) {
+            newPos = maxPos;
+        }
+        knob.style.left = Std.string(newPos) + "px";
+    }
+
+    private function sendVolumeRequest(volumePercent:Float):Void
+    {
+        dispatchEventOnGroup(Events.VOLUME_REQUEST, volumePercent);
+    }
+
 
     private function onVolumeChange(evt:CustomEvent):Void
     {
         var audio:AudioData = cast(evt.detail);
-        volume = audio.volume * 100;
-        trace('volume change ' + volume);
-        muted = (volume == 0);
+
+        if(audio.volume <= 0) {
+            volumeBeforeMute = volume;
+        }
+
+        volume = audio.volume;
 
         updateSoundLevel();
     }
@@ -104,24 +122,15 @@ class ControlBar extends BaseComponent
         playPauseButton.removeClass('playing');
     }
 
-
-    private function sendVolumeRequest(volumePercent:Float):Void
-    {
-        dispatchEventOnGroup(Events.VOLUME_REQUEST, volumePercent);
-    }
-
     /**
      * Called when mouse is moving on the sound level
      * @param  {Event} evt: event fired
      * @return {Void}
      */
     private function onSoundMove(evt:MouseEvent):Void {
-
-        evt.preventDefault();
-        if (soundDragging) {
-            var target:HtmlDom = cast(evt.target);
-
-            sendVolumeRequest(target.getPercentClick(evt));
+        if (soundDragging) 
+        {
+            onSoundClick(evt);
         }
     }
 
@@ -130,18 +139,10 @@ class ControlBar extends BaseComponent
      * @param  {Event} evt: event fired
      * @return {Void}
      */
-    private function onSoundDown(evt:Event):Void {
-        evt.preventDefault();
+    private function onSoundDown(evt:MouseEvent):Void 
+    {
         soundDragging = true;
-    }
-
-    /**
-     * Prevent default actions when event click is fired
-     * @param  {[type]} evt:Event [description]
-     * @return {[type]}           [description]
-     */
-    private function onSoundClick(evt:Event):Void {
-        evt.preventDefault();
+        onSoundClick(evt);
     }
 
     /**
@@ -150,26 +151,18 @@ class ControlBar extends BaseComponent
      * @return {Void}
      */
     private function onSoundUp(evt:MouseEvent):Void {
-        evt.preventDefault();
-        if (soundDragging) {
-            soundDragging = false;
-            var target:HtmlDom = cast(evt.target);
-
-            sendVolumeRequest(target.getPercentClick(evt));
-        }
+        soundDragging = false;
     }
 
-    private function onVolumeRequest(evt:CustomEvent):Void {
-        volume = cast(evt.detail);
-
-
-    }
-
-    private function updateSoundLevel():Void
+    /**
+     * Prevent default actions when event click is fired
+     * @param  {[type]} evt:Event [description]
+     * @return {[type]}           [description]
+     */
+    private function onSoundClick(evt:MouseEvent):Void 
     {
-        muted ? muteButton.addClass('muted') : muteButton.removeClass('muted');
+        var target:HtmlDom = cast(evt.target);
 
-        soundLevel.style.width = volume + "%";
+        sendVolumeRequest((target.getPercentClick(evt) * 100));
     }
-
 }
