@@ -7,7 +7,7 @@ class PlayMachine
 {
 	private var data:Dynamic;
 
-	private var components:Array<Dynamic>;
+	private var components:Array<IComponent>;
 
 #if js
 	public function new(container:HtmlDom,data:Dynamic)
@@ -19,7 +19,8 @@ class PlayMachine
 		//flash boot specific
 		
 #end
-
+		
+		initComponents();
 
 	}
 
@@ -40,13 +41,27 @@ class PlayMachine
 
 	private function initComponents():Void
 	{
+		components = [];
+
 		// Store components className and order
-		var components:Array<Dynamic> = [
-			{'id':'AudioManager','class' : application.ui.AudioManager},
-			{'id':'ControlBar','class' : application.ui.controlBar},
-			{'id':'PlaylistPanel','class' : application.ui.PlaylistPanel},
-			{'id':'SeekBar','class' : application.ui.SeekBar},
-			{'id':'TrackImage','class' : application.ui.TrackImage}
+		var availables:Array<Dynamic> = [
+			{'id':'AudioManager','class' : application.components.AudioManager},
+			{'id':'ControlBar','class' : application.components.controlBar},
+			{'id':'PlaylistPanel','class' : application.components.PlaylistPanel},
+			{'id':'SeekBar','class' : application.components.SeekBar},
+			{'id':'TrackImage','class' : application.components.TrackImage}
 		];
+
+		for (i in 0...availables.length) {
+			var c:Dynamic = availables[i];
+			var o:IComponent = new c.class(c.id,data);
+			components.push(o);
+		}
+
+		//init component after all are instanciated
+		for(i in 0...components.length) {
+			components[i].init();
+		}
+
 	}
 }

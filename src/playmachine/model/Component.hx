@@ -22,6 +22,8 @@ class Component
 
     private var stylesAreInitiated:Bool;
 
+    private var application:IApplication;
+
     /**
      * The base data :
      *     js : application.init(node,data)
@@ -32,7 +34,7 @@ class Component
     /**
      * here we set the data for js and flash, so each component will have access to data before init
      */
-    public function new(nodeClassName:String,data:Dynamic) 
+    public function new(nodeClassName:String,application:IApplication) 
     {
     	try {
     		element = Lib.document.getElementsByClassName(nodeClassName)[0];
@@ -41,10 +43,8 @@ class Component
     		// to do, handle errors
     	}
 
-        this.data 	= data;
-
-        global = new EventDispatcher();
-
+        global = application.global;
+        data = application.data;
     }
 
     /**
