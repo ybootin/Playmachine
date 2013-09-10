@@ -2,7 +2,7 @@ package playmachine.ui;
 
 import playmachine.event.HTML5AudioEvents;
 import playmachine.data.AudioData;
-import application.core.BaseComponent;
+import application.model.Component;
 import playmachine.event.Events;
 import js.Lib;
 import js.Dom;
@@ -12,7 +12,7 @@ using application.helpers.HtmlDomHelper;
 /**
  * The seekBar UI component
  */
-class SeekBar extends BaseComponent
+class SeekBar extends Component
 {
     /**
      * Holds the last audioData object received from audio event
@@ -28,8 +28,8 @@ class SeekBar extends BaseComponent
     {
         audioData = new AudioData();
 
-        played = rootElement.getElementByClassName('played');
-        buffered = rootElement.getElementByClassName('buffered');
+        played = element.getElementByClassName('played');
+        buffered = element.getElementByClassName('buffered');
 
         reset();
 
@@ -43,12 +43,12 @@ class SeekBar extends BaseComponent
         played.addEventListener('mousemove',cast(onMouseMove),false);
         buffered.addEventListener('mousemove',cast(onMouseMove),false);
 
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
+        global.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
+        global.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
 
-        groupElement.addEventListener(Events.NEXT_TRACK_REQUEST,onTrackChange,false);
-        groupElement.addEventListener(Events.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
-        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,onTrackChange,false);
+        global.addEventListener(Events.NEXT_TRACK_REQUEST,onTrackChange,false);
+        global.addEventListener(Events.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
+        global.addEventListener(Events.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function reset():Void

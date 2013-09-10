@@ -2,7 +2,7 @@ package playmachine.ui;
 
 import playmachine.event.HTML5AudioEvents;
 import playmachine.data.Track;
-import application.core.BaseComponent;
+import application.model.Component;
 import playmachine.event.Events;
 import js.Lib;
 import js.Dom;
@@ -12,7 +12,7 @@ using application.helpers.HtmlDomHelper;
 /**
  * Display the track image
  */
-class TrackImage extends BaseComponent
+class TrackImage extends Component
 {
     var image:Image;
 
@@ -23,10 +23,10 @@ class TrackImage extends BaseComponent
         }
         else {
             image = cast(Lib.document.createElement('img'));
-            rootElement.appendChild(image);
+            element.appendChild(image);
         }
 
-        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
+        global.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
     }
 
     private function hide():Void

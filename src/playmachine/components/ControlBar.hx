@@ -5,7 +5,7 @@ import playmachine.data.AudioData;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
 import playmachine.data.Track;
-import application.core.BaseComponent;
+import application.model.Component;
 import playmachine.event.Events;
 import js.Lib;
 import js.Dom;
@@ -15,7 +15,7 @@ import haxe.Resource;
 import application.core.Logger;
 import playmachine.core.Constants;
 
-class ControlBar extends BaseComponent
+class ControlBar extends Component
 {
     private var playPauseButton:HtmlDom;
     private var previousButton:HtmlDom;
@@ -34,17 +34,17 @@ class ControlBar extends BaseComponent
     {
         volume = Constants.DEFAULT_SOUND_LEVEL;
 
-        playPauseButton = rootElement.getElementByClassName('playPauseButton');
-        previousButton = rootElement.getElementByClassName('previousButton');
-        forwardButton = rootElement.getElementByClassName('forwardButton');
-        muteButton = rootElement.getElementByClassName('muteButton');
-        soundLevel = rootElement.getElementByClassName('soundLevel');
+        playPauseButton = element.getElementByClassName('playPauseButton');
+        previousButton = element.getElementByClassName('previousButton');
+        forwardButton = element.getElementByClassName('forwardButton');
+        muteButton = element.getElementByClassName('muteButton');
+        soundLevel = element.getElementByClassName('soundLevel');
 
         updateSoundLevel();
 
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
-        groupElement.addEventListener(HTML5AudioEvents.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
+        global.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
+        global.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
+        global.addEventListener(HTML5AudioEvents.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
 
         forwardButton.addEventListener('click',function(e:Event):Void {
             dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);

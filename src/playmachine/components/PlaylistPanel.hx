@@ -5,7 +5,7 @@ import playmachine.data.AudioData;
 import application.helpers.HtmlDomHelper;
 using application.helpers.HtmlDomHelper;
 import playmachine.data.Track;
-import application.core.BaseComponent;
+import application.model.Component;
 import playmachine.event.Events;
 import js.Lib;
 import js.Dom;
@@ -14,7 +14,7 @@ import haxe.Template;
 import haxe.Resource;
 import application.core.Logger;
 
-class PlaylistPanel extends BaseComponent
+class PlaylistPanel extends Component
 {
     /**
      * Holds the defaults html template for a track
@@ -33,18 +33,18 @@ class PlaylistPanel extends BaseComponent
         super.init();
 
         //setup the current template base noe content
-        template = rootElement.innerHTML;
-        rootElement.innerHTML = "";
+        template = element.innerHTML;
+        element.innerHTML = "";
 
         tracks = new IntHash();
         tracksElement = new IntHash();
         tracksPosition = [];
 
-        groupElement.addEventListener(Events.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
-        groupElement.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        groupElement.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        groupElement.addEventListener(Events.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
-        groupElement.addEventListener(Events.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
+        global.addEventListener(Events.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
+        global.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
+        global.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        global.addEventListener(Events.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
+        global.addEventListener(Events.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
 
         // init the tracks
         if(data.tracks != null) {
@@ -81,7 +81,7 @@ class PlaylistPanel extends BaseComponent
         tracksElement.set(t.id,e);
         tracksPosition.push(t.id);
 
-        rootElement.appendChild(e);
+        element.appendChild(e);
     }
 
     private function onRemoveRequest(e:CustomEvent):Void
@@ -89,7 +89,7 @@ class PlaylistPanel extends BaseComponent
         var t:Track = cast(e.detail);
 
         tracks.remove(t.id);
-        rootElement.removeChild(tracksElement.get(t.id));
+        element.removeChild(tracksElement.get(t.id));
         tracksElement.remove(t.id);
         tracksPosition.remove(t.id);
     }
