@@ -128,7 +128,7 @@ class ControlBar extends Component
      * @return {Void}
      */
     private function onSoundMove(evt:MouseEvent):Void {
-        if (soundDragging) 
+        if (soundDragging)
         {
             onSoundClick(evt);
         }
@@ -139,7 +139,7 @@ class ControlBar extends Component
      * @param  {Event} evt: event fired
      * @return {Void}
      */
-    private function onSoundDown(evt:MouseEvent):Void 
+    private function onSoundDown(evt:MouseEvent):Void
     {
         soundDragging = true;
         onSoundClick(evt);
@@ -159,7 +159,7 @@ class ControlBar extends Component
      * @param  {[type]} evt:Event [description]
      * @return {[type]}           [description]
      */
-    private function onSoundClick(evt:MouseEvent):Void 
+    private function onSoundClick(evt:MouseEvent):Void
     {
         var target:HtmlDom = cast(evt.target);
 

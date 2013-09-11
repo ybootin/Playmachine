@@ -14,7 +14,7 @@ import application.core.Application;
  */
 package playmachine.model;
 
-class Component
+class Component extends EventDispatcher implements IComponent
 {
     private var global:EventDispatcher;
 
@@ -34,13 +34,17 @@ class Component
     /**
      * here we set the data for js and flash, so each component will have access to data before init
      */
-    public function new(nodeClassName:String,application:IApplication) 
+    public function new(application:IApplication,?nodeClassName:String = null)
     {
+        if(nodeClassName == null) {
+            // TODO Reflect !
+        }
+
     	try {
     		element = Lib.document.getElementsByClassName(nodeClassName)[0];
     	}
     	catch(e:Dynamic) {
-    		// to do, handle errors
+    		// TODO , handle errors
     	}
 
         global = application.global;
@@ -73,7 +77,7 @@ class Component
      */
     public function dispatchEventOnGroup(eventName:String, ?eventData:Dynamic):Void
     {
-        global.dispatchCustomEvent(eventName, eventData);
+        global.dispatchEvent(new ApplicationEvent(eventName, eventData));
     }
 
     // FIXME : to be removed, styles will be loaded by http !
