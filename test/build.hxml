@@ -1,0 +1,4 @@
+-js test.js
+-main Test
+-debug
+-resource ../templates/player.html@template
