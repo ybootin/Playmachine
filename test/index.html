@@ -1,7 +1,37 @@
 <!doctype html>
 <html>
   <head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
     <script type="text/javascript" src="test.js"></script>
   </head>
-  <body>Open the console dude !</body>
+  <body>
+    <div class="container">
+      <div id="js"></div>
+      <div id="swf"></div>
+    </div>
+    <script type="text/javascript">
+      var test = new Test(document.getElementById('js'));
+
+        //init the flash app
+        swfobject.embedSWF(
+            'test.swf',
+            'swf',
+            "600",
+            "800",
+            '10.2.0',
+            null,
+            {},
+            {
+                'allowFullScreen': true,
+                'allowScriptAccess': 'always',
+                'wmode': 'direct',
+                'scale': 'exactfit'
+            },
+            {
+                'bgcolor' : '#FFFFFF',
+                'style':"background-color:#FFFFFF"
+            }
+        );
+    </script>
+  </body>
 </html>

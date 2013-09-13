@@ -2,3 +2,11 @@
 -main Test
 -debug
 -resource ../templates/player.html@template
+--next
+-swf test.swf
+-main Test
+-cp ../lib/BrixCocktailApplication/lib/Cocktail/src
+-debug
+-resource ../templates/player.html@template
+--remap js:cocktail
+-swf-version 10.2

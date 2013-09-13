@@ -23,6 +23,7 @@ class Application extends EventDispatcher, implements IApplication
     public function new(container:HtmlDom,data:Dynamic)
     {
         //js boot specific
+        rootNode = container;
 #elseif flash
     public function new(data:Dynamic)
     {
