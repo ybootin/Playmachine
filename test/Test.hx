@@ -1,33 +1,23 @@
 package;
 
-import haxe.xml.Fast;
-import haxe.xml.Parser;
-
-import js.Dom;
-import js.Lib;
-
+import js.html.HtmlElement;
+import js.Browser;
 import haxe.Resource;
 
-class Test
+@:expose class Test
 {
-    private var rootNode:HtmlDom;
+    private var rootNode:HtmlElement;
 
 #if js
-    public function new(container:HtmlDom)
+    public function new(container:HtmlElement)
     {
         //js boot specific
         rootNode = container;
 #elseif flash
     public function new()
     {
-        //flash boot specific
-        var rootNode:HtmlDom = cast(Lib.document.createElement('div'));
-        Lib.document.body.appendChild(rootNode);
 #end
-
-        trace(rootNode);
-        var tmpl:String = Resource.getString('template');
-        parseTemplate(tmpl);
+        parseTemplate();
     }
 
     public static function main()
@@ -37,37 +27,39 @@ class Test
 #end
     }
 
-    private function parseTemplate(tmpl:String):Void
+    private function parseTemplate():Void
     {
-        trace(tmpl);
+        var xml:Xml = Xml.parse(Resource.getString('template'));
 
-        var xml:Xml = Parser.parse(tmpl);
-        var fast:Fast = new Fast(xml);
+        var body:String = "";
+        for(node in xml.elementsNamed('html')) {
 
-        var stylesheets:Array<String> = [];
-        // parse head, and retrieve stylesheets (and script for js)
-
-        // retrieve the body, inject the styles sheets, and append root node
-        var body:String = fast.node.html.node.body.x.toString();
-        var head = fast.node.html.node.head;
-
-        if (head.hasNode.style) {
-            for(tag in head.nodes.style) {
-                body += tag.x.toString();
-            }
-        }
-
-        if (head.hasNode.link) {
-            for(tag in head.nodes.link) {
-                if(tag.has.rel && tag.has.href && tag.att.rel == "stylesheet") {
-                    body += tag.x.toString();
+            for(hnode in node.elementsNamed('head')) {
+                for(lnode in hnode.elementsNamed('link')) {
+                    body += lnode.toString();
                 }
+                for(snode in hnode.elementsNamed('style')) {
+                    body += snode.toString();
+                }
+            }
+            for(bnode in node.elementsNamed('body')) {
+                body += bnode.toString();
             }
         }
 #if js
         rootNode.innerHTML = body;
 #else
-        rootNode.innerHTML = StringTools.urlDecode(body);
+        //init cocktail, and starts the load of the "index.html" file
+        cocktail.api.Cocktail.boot();
+
+        // IMPORTANT, do this otherwise the app will fit to the swf-header width/height
+        flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+
+        //when document is loaded, set the content of the body
+        Browser.window.onload = function(e) {
+            Browser.document.body.innerHTML = body;
+            rootNode = Browser.document.body;
+        }
 #end
     }
 }

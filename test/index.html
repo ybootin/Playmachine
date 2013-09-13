@@ -3,6 +3,13 @@
   <head>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
     <script type="text/javascript" src="test.js"></script>
+    <style>
+      #js {
+        width:400px;
+        height: 300px;
+        margin-bottom:30px;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -10,28 +17,32 @@
       <div id="swf"></div>
     </div>
     <script type="text/javascript">
-      var test = new Test(document.getElementById('js'));
+      window.onload = function() {
 
-        //init the flash app
-        swfobject.embedSWF(
-            'test.swf',
-            'swf',
-            "600",
-            "800",
-            '10.2.0',
-            null,
-            {},
-            {
-                'allowFullScreen': true,
-                'allowScriptAccess': 'always',
-                'wmode': 'direct',
-                'scale': 'exactfit'
-            },
-            {
-                'bgcolor' : '#FFFFFF',
-                'style':"background-color:#FFFFFF"
-            }
-        );
+
+          //init the flash app
+          swfobject.embedSWF(
+              'test.swf',
+              'swf',
+              "400",
+              "300",
+              '10.2.0',
+              null,
+              {},
+              {
+                  'allowFullScreen': true,
+                  'allowScriptAccess': 'always',
+                  'wmode': 'direct',
+                  'scale': 'nocale'
+              },
+              {
+                  'bgcolor' : '#FFFFFF',
+                  'style':"background-color:#FFFFFF"
+              }
+          );
+
+          var test = new Test(document.getElementById('js'));
+        }
     </script>
   </body>
 </html>

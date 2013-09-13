@@ -1,12 +1,14 @@
 -js test.js
 -main Test
 -debug
--resource ../templates/player.html@template
+-resource test.html@template
 --next
 -swf test.swf
 -main Test
--cp ../lib/BrixCocktailApplication/lib/Cocktail/src
+#-cp ../lib/BrixCocktailApplication/lib/Cocktail/src
 -debug
--resource ../templates/player.html@template
+-resource test.html@template
+-lib cocktail
 --remap js:cocktail
 -swf-version 10.2
+#-swf-header 800:600:40:FF0000
