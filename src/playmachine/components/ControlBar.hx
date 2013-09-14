@@ -98,15 +98,13 @@ class ControlBar extends Component
     }
 
 
-    private function onVolumeChange(evt:PlaymachineEvent):Void
+    private function onVolumeChange(evt:AudioEvent):Void
     {
-        var audio:AudioData = cast(evt.detail);
-
-        if(audio.volume <= 0) {
+        if(evt.data.volume <= 0) {
             volumeBeforeMute = volume;
         }
 
-        volume = audio.volume;
+        volume = evt.data.volume;
 
         updateSoundLevel();
     }

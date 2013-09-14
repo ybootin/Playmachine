@@ -14,6 +14,7 @@ import haxe.Timer;
 
 import playmachine.core.Constants;
 import playmachine.event.AudioEvent;
+import playmachine.event.PlaymachineEvent;
 import playmachine.data.AudioData;
 
 /**
@@ -103,7 +104,7 @@ class MP3Player extends Sprite
         initExternalCallbacks();
 
         // At this time we consider that player is ready to handle incoming request
-        dispatchEventToExternal(AudioEvent.AUDIO_READY);
+        dispatchEventToExternal(PlaymachineEvent.AUDIO_READY);
 
         var playbackTimer = new Timer(TIMEUPDATE_DELAY);
         playbackTimer.run = checkPlayback;

@@ -3,38 +3,39 @@ package playmachine.helpers;
 import js.Browser;
 import js.html.Event;
 import js.html.Element;
+import js.html.HtmlElement;
 import js.html.Node;
 import js.html.MouseEvent;
 
-class ElementHelper {
+class HtmlElementHelper {
 
 
-    public static function getElementByClassName(elt:Element, name:String):Node {
+    public static function getElementByClassName(elt:HtmlElement, name:String):HtmlElement {
         var a = elt.getElementsByClassName(name);
-        return a[0];
+        return cast(a[0]);
     }
 
-    public static function getClassNames(elt:Element):Array<String> {
+    public static function getClassNames(elt:HtmlElement):Array<String> {
         var classes = elt.className;
         if (classes == null)
             return new Array<String>();
         return classes.split(" ");
     }
 
-    public static function addClass(element:Element, className:String):Element {
+    public static function addClass(element:HtmlElement, className:String):HtmlElement {
         if (element.className.indexOf(className) == -1) {
             element.className += ' ' + className;
         }
         return element;
     }
-    public static function removeClass(element:Element, className:String):Element {
+    public static function removeClass(element:HtmlElement, className:String):HtmlElement {
         if (element.className.indexOf(className) >= 0) {
             element.className = StringTools.replace(element.className, className, '');
             element.className = StringTools.trim(element.className);
         }
         return element;
     }
-    public static function toggleClass(element:Element, className:String):Element {
+    public static function toggleClass(element:HtmlElement, className:String):HtmlElement {
         if (element.className.indexOf(className) == -1) {
             return addClass(element,className);
         }
@@ -43,7 +44,7 @@ class ElementHelper {
         }
     }
 
-    public static function replaceClass(elt:Element,currentClass:String,newClass:String):Element {
+    public static function replaceClass(elt:HtmlElement,currentClass:String,newClass:String):HtmlElement {
         removeClass(elt,currentClass);
         return addClass(elt,newClass);
     }
@@ -51,21 +52,21 @@ class ElementHelper {
     /**
      * text or comment are proper Element instances but are missing the getAttribute() method!
      */
-    public static function getChildElements(elt:Element):List<Element> {
-        var children = new List<Element>();
+    public static function getChildElements(elt:HtmlElement):List<HtmlElement> {
+        var children = new List<HtmlElement>();
         var i;
         for (i in 0...elt.childNodes.length) {
             var child = elt.childNodes[i];
             // Only look for element nodes
             if (child.nodeType == 1) {
-                children.add(child);
+                children.add(cast(child));
             }
         }
 
         return children;
     }
 
-    public static function getOffset(el:Element):Array<Int> {
+    public static function getOffset(el:HtmlElement):Array<Int> {
         var _x = 0;
         var _y = 0;
         while (el != null)
@@ -82,7 +83,7 @@ class ElementHelper {
             }
 
             try {
-                el = el.offsetParent;
+                el = cast(el.offsetParent);
             }
             catch (e:Dynamic) {
                 break;
@@ -91,7 +92,7 @@ class ElementHelper {
         return [_x, _y];
     }
 
-    public static function getPercentClick(el:Element,evt:MouseEvent):Float
+    public static function getPercentClick(el:HtmlElement,evt:MouseEvent):Float
     {
         var offset:Array<Int> = getOffset(el);
         var realX:Float = evt.clientX - offset[0];
@@ -100,7 +101,7 @@ class ElementHelper {
         return percentClick;
     }
 
-    public static function appendSWF(elt:Element,src:String,width:Int,height:Int):Void
+    public static function appendSWF(elt:HtmlElement,src:String,width:Int,height:Int):Void
     {
 #if js
         var params = {

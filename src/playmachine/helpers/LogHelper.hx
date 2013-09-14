@@ -8,6 +8,8 @@ class LogHelper
 {
     public static var APPLICATION_NAME:String = "application";
 
+    public static var debug:Bool;
+
     /**
      * avoid trace directly in flash, better use js console
      *

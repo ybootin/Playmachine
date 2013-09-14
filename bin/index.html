@@ -32,7 +32,7 @@
         };
 
         //init the JS app
-        playMachine.init(document.getElementById('container-js'),data);
+        var pm = new playmachine.application.PlayMachine(document.getElementById('container-js'),data);
 /*
         //init the flash app
         swfobject.embedSWF(

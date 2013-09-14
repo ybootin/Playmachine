@@ -2,12 +2,15 @@ package playmachine.components;
 
 import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
-import application.model.Component;
-import playmachine.event.ApplicationEvent;
-import js.Lib;
-import js.Dom;
+import playmachine.core.Component;
+import playmachine.event.PlaymachineEvent;
 import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.HtmlElementHelper;
+
+import js.html.HtmlElement;
+import js.html.Event;
+import js.html.MouseEvent;
+import js.Browser;
 
 /**
  * The seekBar UI component
@@ -46,9 +49,9 @@ class SeekBar extends Component
         application.addEventListener(AudioEvent.AUDIO_TIMEUPDATE,cast(onProgress),false);
         application.addEventListener(AudioEvent.AUDIO_PROGRESS,cast(onBuffer),false);
 
-        application.addEventListener(ApplicationEvent.NEXT_TRACK_REQUEST,onTrackChange,false);
-        application.addEventListener(ApplicationEvent.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
-        application.addEventListener(ApplicationEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function reset():Void
@@ -67,18 +70,14 @@ class SeekBar extends Component
         buffered.style.width = percent + "%";
     }
 
-    private function onProgress(evt:ApplicationEvent):Void
+    private function onProgress(evt:AudioEvent):Void
     {
-        audioData = cast(evt.detail);
-
-        setProgressPosition(audioData.percentPlayed);
+        setProgressPosition(evt.data.percentPlayed);
     }
 
-    private function onBuffer(evt:ApplicationEvent):Void
+    private function onBuffer(evt:AudioEvent):Void
     {
-        audioData = cast(evt.detail);
-
-        setBufferPositon(audioData.percentLoaded);
+        setBufferPositon(evt.data.percentLoaded);
     }
 
     private function onClick(evt:MouseEvent):Void
@@ -91,7 +90,7 @@ class SeekBar extends Component
         var percentAdapt = (isBufferBar ? 1 : (audioData.currentTime / audioData.duration * (1 /(audioData.percentLoaded / 100))));
         var seekPercent:Float = target.getPercentClick(evt) * 100 * percentAdapt;
 
-        dispatchEventOnGroup(ApplicationEvent.SEEK_REQUEST,seekPercent);
+        application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.SEEK_REQUEST,seekPercent));
     }
 
     private function onMouseDown(evt:MouseEvent):Void

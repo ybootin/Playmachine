@@ -1,10 +1,10 @@
 package playmachine.components;
 
 import playmachine.core.Component;
-import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.HtmlElementHelper;
-import playmachine.helpers.AudioHelper;
+import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.AudioHelper;
+import playmachine.helpers.AudioHelper;
 import playmachine.event.ApplicationEvent;
 import playmachine.event.PlaymachineEvent;
 import playmachine.data.Track;

@@ -3,12 +3,12 @@
 -debug
 -cp src
 -resource templates/player.html@template
---next
--swf bin/playMachine.swf
--main playmachine.application.PlayMachine
--debug
--cp src
--resource templates/player.html@template
--lib cocktail
---remap js:cocktail
--swf-version 10.2
+#--next
+#-swf bin/playMachine.swf
+#-main playmachine.application.PlayMachine
+#-debug
+#-cp src
+#-resource templates/player.html@template
+#-lib cocktail
+#--remap js:cocktail
+#-swf-version 10.2

@@ -27,7 +27,7 @@ class EventDispatcher implements IEventDispatcher
      */
     public function new(?target:Dynamic)
     {
-        listeners = new Map();
+        listeners = new Map<String,Dynamic>();
     }
 
     public function addEventListener(type:String, listener:Dynamic, ?useCapture:Bool = false):Void

@@ -5,8 +5,8 @@ import playmachine.core.IApplication;
 
 interface IComponent
 {
-    private var element:HtmlElement;
-    private var application:IApplication;
+    public var element:HtmlElement;
+    public var application:IApplication;
 
 
     /**
@@ -19,6 +19,6 @@ interface IComponent
      * @param  {String} name: Name of the element
      * @return {HtmlElement}              The element
      */
-    public function getElementByName(name:String):HtmlElement;
+    public function getChildElement(className:String):HtmlElement;
 
 }

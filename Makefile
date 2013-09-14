@@ -10,6 +10,7 @@ $(PLAYMACHINE): $(SOURCES) build.hxml
 	haxe build.hxml
 	rm -Rf bin/images
 	cp -Rf templates/images/ bin/images/
+	cp templates/styles.css bin/
 
 $(MP3PLAYER): $(SOURCES) build-mp3player.hxml
 	haxe build-mp3player.hxml

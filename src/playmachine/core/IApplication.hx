@@ -5,9 +5,9 @@ import playmachine.event.IEventDispatcher;
 
 interface IApplication extends IEventDispatcher
 {
-    private var data:Dynamic;
+    public var data:Dynamic;
 
-    private var components:Array<IComponent>;
+    public var components:Array<IComponent>;
 
     private var rootNode:HtmlElement;
 

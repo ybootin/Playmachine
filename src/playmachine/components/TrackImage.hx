@@ -2,12 +2,13 @@ package playmachine.components;
 
 import playmachine.event.AudioEvent;
 import playmachine.data.Track;
-import application.model.Component;
-import playmachine.event.ApplicationEvent;
-import js.Lib;
-import js.Dom;
+import playmachine.core.Component;
+import playmachine.event.PlaymachineEvent;
 import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.HtmlElementHelper;
+
+import js.html.Image;
+import js.Browser;
 
 /**
  * Display the track image
@@ -26,7 +27,7 @@ class TrackImage extends Component
             element.appendChild(image);
         }
 
-        application.addEventListener(ApplicationEvent.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
     }
 
     private function hide():Void
@@ -39,9 +40,9 @@ class TrackImage extends Component
         image.style.display = "block";
     }
 
-    private function onTrackChange(evt:ApplicationEvent):Void
+    private function onTrackChange(evt:PlaymachineEvent):Void
     {
-        var t:Track = cast(evt.detail);
+        var t:Track = cast(evt.data);
         var src:String = t.image;
 
         if(src == null || src.length == 0) {

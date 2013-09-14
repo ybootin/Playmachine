@@ -30,6 +30,8 @@ class Application extends EventDispatcher implements IApplication
 #elseif flash
     public function new(data:Dynamic)
     {
+        super();
+
         // Better trace
         haxe.Log.trace = playmachine.helpers.LogHelper.trace;
 #end
