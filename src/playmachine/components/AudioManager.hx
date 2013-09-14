@@ -36,16 +36,14 @@ class AudioManager extends Component
     {
         super.init();
 
-        application.addEventListener(PlaymachineEvent.AUDIO_READY,function(evt:Event):Void {
-            initListeners();
-        },false);
+        application.addEventListener(PlaymachineEvent.AUDIO_READY,onReady,false);
 
         audio = cast(element.getElementByClassName('audio'));
 
 #if js
         //Browser doesn't supper MP3
         if(!audio.hasMP3()) {
-            appendFlashPlayer();
+            //appendFlashPlayer();
         }
 #end
 
@@ -63,10 +61,7 @@ class AudioManager extends Component
             application.dispatchEvent(new AudioEvent(PlaymachineEvent.AUDIO_READY, getAudioData()));
         }
 
-        //update volume, let the others components init, and handle volume change
-        Timer.delay(function():Void {
-            setVolume(Constants.DEFAULT_SOUND_LEVEL);
-        },500);
+
     }
 
     private function setVolume(volumePercent:Float):Void
@@ -106,18 +101,19 @@ class AudioManager extends Component
             element.removeChild(audio);
 
             var jshandlerName:String = "playmachinejshandler";
-            var that = this;
-            untyped {
-                Browser.window.playmachinejshandler = function(eventName,eventData) {
+            var playmachinejshandler = function(eventName,eventData):Void {
+                if(eventName == PlaymachineEvent.AUDIO_READY) {
+                    flashPlayer = cast(Browser.document.getElementById("mp3player"));
+                }
+                application.dispatchEvent(new AudioEvent(eventName,eventData));
+            };
 
-                    if(eventName == AudioEvent.AUDIO_READY) {
-                        that.flashPlayer = Browser.document.getElementById("mp3player");
-                    }
-                    that.application.dispatchEvent(new AudioEvent(eventName,eventData));
-                };
-            }
-            element.setAttribute('id',  'mp3player');
-            element.appendSWF('mp3player.swf?handler=' + jshandlerName,10,10);
+            Reflect.setField(Browser.window,jshandlerName,playmachinejshandler);
+
+            var mp3player:HtmlElement = cast(Browser.document.createElement('div'));
+            mp3player.setAttribute('id',  'mp3player');
+            element.appendChild(mp3player);
+            mp3player.appendSWF('mp3player.swf?handler=' + jshandlerName,10,10);
         }
     }
 
@@ -154,6 +150,12 @@ class AudioManager extends Component
 
         application.addEventListener(AudioEvent.AUDIO_ENDED,cast(onTrackEnded),false);
 
+    }
+
+    private function onReady(evt:PlaymachineEvent):Void
+    {
+        initListeners();
+        setVolume(Constants.DEFAULT_SOUND_LEVEL);
     }
 
     private function onVolumeRequest(evt:PlaymachineEvent):Void
