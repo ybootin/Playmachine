@@ -13,7 +13,7 @@ import flash.external.ExternalInterface;
 import haxe.Timer;
 
 import playmachine.core.Constants;
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
 
 /**
@@ -90,7 +90,7 @@ class MP3Player extends Sprite
         super();
 
         //better trace ;)
-        haxe.Log.trace = playmachine.application.MP3Player.trace;
+        haxe.Log.trace = playmachine.helpers.LogHelper.trace;
 
         jsEventHandler = flash.Lib.current.loaderInfo.parameters.handler;
 
@@ -103,7 +103,7 @@ class MP3Player extends Sprite
         initExternalCallbacks();
 
         // At this time we consider that player is ready to handle incoming request
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_READY);
+        dispatchEventToExternal(AudioEvent.AUDIO_READY);
 
         var playbackTimer = new Timer(TIMEUPDATE_DELAY);
         playbackTimer.run = checkPlayback;
@@ -135,7 +135,7 @@ class MP3Player extends Sprite
         audio.addEventListener(ProgressEvent.PROGRESS, onBuffer);
         audio.load(new URLRequest(url));
 
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_LOADSTART);
+        dispatchEventToExternal(AudioEvent.AUDIO_LOADSTART);
     }
 
     /**
@@ -152,7 +152,7 @@ class MP3Player extends Sprite
             channel = audio.play((start != null ? start : lastPlayedTime));
             setVolume(volume);
 
-            dispatchEventToExternal(HTML5AudioEvents.AUDIO_PLAY);
+            dispatchEventToExternal(AudioEvent.AUDIO_PLAY);
 
             return true;
         }
@@ -169,7 +169,7 @@ class MP3Player extends Sprite
             channel.stop();
             channel = null;
 
-            dispatchEventToExternal(HTML5AudioEvents.AUDIO_PAUSE);
+            dispatchEventToExternal(AudioEvent.AUDIO_PAUSE);
         }
     }
 
@@ -183,7 +183,7 @@ class MP3Player extends Sprite
 
         // dispatch event only if play success
         if(play(cuePoint)) {
-            dispatchEventToExternal(HTML5AudioEvents.AUDIO_SEEKED);
+            dispatchEventToExternal(AudioEvent.AUDIO_SEEKED);
         }
 
     }
@@ -205,7 +205,7 @@ class MP3Player extends Sprite
             transform.volume = percent / 100;
             channel.soundTransform = transform;
 
-            dispatchEventToExternal(HTML5AudioEvents.AUDIO_VOLUMECHANGE);
+            dispatchEventToExternal(AudioEvent.AUDIO_VOLUMECHANGE);
         }
     }
 
@@ -238,11 +238,11 @@ class MP3Player extends Sprite
         try {
             if (channel != null && channel.position != lastPlayedTime) {
                 lastPlayedTime = channel.position;
-                dispatchEventToExternal(HTML5AudioEvents.AUDIO_TIMEUPDATE);
+                dispatchEventToExternal(AudioEvent.AUDIO_TIMEUPDATE);
 
                 var data:AudioData = getAudioData();
                 if(data.percentLoaded == 100 && data.percentPlayed >= 99.9999) {
-                    dispatchEventToExternal(HTML5AudioEvents.AUDIO_ENDED);
+                    dispatchEventToExternal(AudioEvent.AUDIO_ENDED);
                 }
             }
         }
@@ -294,7 +294,7 @@ class MP3Player extends Sprite
      */
     private function id3Handler(event:Event):Void
     {
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_LOADEDMETADATA);
+        dispatchEventToExternal(AudioEvent.AUDIO_LOADEDMETADATA);
     }
 
     /**
@@ -303,7 +303,7 @@ class MP3Player extends Sprite
     private function errorHandler(event:ErrorEvent):Void
     {
         error = event;
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_ERROR);
+        dispatchEventToExternal(AudioEvent.AUDIO_ERROR);
     }
 
     /**
@@ -311,7 +311,7 @@ class MP3Player extends Sprite
      */
     private function onBuffer(event:ProgressEvent):Void
     {
-        dispatchEventToExternal(HTML5AudioEvents.AUDIO_PROGRESS);
+        dispatchEventToExternal(AudioEvent.AUDIO_PROGRESS);
     }
 
     /**

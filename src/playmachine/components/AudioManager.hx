@@ -1,18 +1,22 @@
-package playmachine.audio;
+package playmachine.components;
 
-import application.model.Component;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
+import playmachine.core.Component;
+import playmachine.helpers.HtmlElementHelper;
+using playmachine.helpers.HtmlElementHelper;
 import playmachine.helpers.AudioHelper;
 using playmachine.helpers.AudioHelper;
-import playmachine.event.Events;
+import playmachine.event.ApplicationEvent;
+import playmachine.event.PlaymachineEvent;
 import playmachine.data.Track;
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
 import playmachine.core.Constants;
 
-import js.Dom;
-import js.Lib;
+
+import js.Browser;
+import js.html.Event;
+import js.html.Audio;
+import js.html.HtmlElement;
 
 import haxe.Timer;
 
@@ -20,7 +24,7 @@ class AudioManager extends Component
 {
     var audio:Audio;
 
-    var flashPlayer:HtmlDom;
+    var flashPlayer:HtmlElement;
 
     var playerReady:Bool;
 
@@ -32,7 +36,7 @@ class AudioManager extends Component
     {
         super.init();
 
-        global.addEventListener(HTML5AudioEvents.AUDIO_READY,function(evt:Event):Void {
+        application.addEventListener(PlaymachineEvent.AUDIO_READY,function(evt:Event):Void {
             initListeners();
         },false);
 
@@ -47,17 +51,16 @@ class AudioManager extends Component
 
         if(!useFlashPlayer) {
             // redispatch all audio events
-            var events:Array<String> = Type.getClassFields(HTML5AudioEvents);
+            var events:Array<String> = Type.getClassFields(AudioEvent);
 
             for(i in 0...events.length) {
-                var eventName:String = Reflect.field(HTML5AudioEvents,events[i]);
+                var eventName:String = Reflect.field(AudioEvent,events[i]);
 
                 audio.addEventListener(eventName,function(e:Event):Void {
-                    dispatchEventOnGroup(e.type, getAudioData());
+                    application.dispatchEvent(new AudioEvent(e.type, getAudioData()));
                 },false);
             }
-
-            dispatchEventOnGroup(HTML5AudioEvents.AUDIO_READY, getAudioData());
+            application.dispatchEvent(new AudioEvent(PlaymachineEvent.AUDIO_READY, getAudioData()));
         }
 
         //update volume, let the others components init, and handle volume change
@@ -105,13 +108,12 @@ class AudioManager extends Component
             var jshandlerName:String = "playmachinejshandler";
             var that = this;
             untyped {
-                Lib.window.playmachinejshandler = function(eventName,eventData) {
+                Browser.window.playmachinejshandler = function(eventName,eventData) {
 
-                    if(eventName == HTML5AudioEvents.AUDIO_READY) {
-                        that.flashPlayer = Lib.document.getElementById("mp3player");
+                    if(eventName == AudioEvent.AUDIO_READY) {
+                        that.flashPlayer = Browser.document.getElementById("mp3player");
                     }
-
-                    that.dispatchEventOnGroup(eventName,eventData);
+                    that.application.dispatchEvent(new AudioEvent(eventName,eventData));
                 };
             }
             element.setAttribute('id',  'mp3player');
@@ -138,35 +140,35 @@ class AudioManager extends Component
 
     private function initListeners():Void
     {
-        global.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        global.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        global.addEventListener(Events.SEEK_REQUEST,cast(onSeekRequest),false);
-        global.addEventListener(Events.VOLUME_REQUEST,cast(onVolumeRequest),false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
+        application.addEventListener(PlaymachineEvent.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        application.addEventListener(PlaymachineEvent.SEEK_REQUEST,cast(onSeekRequest),false);
+        application.addEventListener(PlaymachineEvent.VOLUME_REQUEST,cast(onVolumeRequest),false);
 
-        global.addEventListener(Events.PLAY_REQUEST,function(e:Event):Void {
+        application.addEventListener(PlaymachineEvent.PLAY_REQUEST,function(e:Event):Void {
             play();
         },false);
-        global.addEventListener(Events.PAUSE_REQUEST,function(e:Event):Void {
+        application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,function(e:Event):Void {
             pause();
         },false);
 
-        global.addEventListener(HTML5AudioEvents.AUDIO_ENDED,cast(onTrackEnded),false);
+        application.addEventListener(AudioEvent.AUDIO_ENDED,cast(onTrackEnded),false);
 
     }
 
-    private function onVolumeRequest(evt:CustomEvent):Void
+    private function onVolumeRequest(evt:PlaymachineEvent):Void
     {
-        setVolume(cast(evt.detail));
+        setVolume(cast(evt.data));
     }
 
-    private function onSeekRequest(e:CustomEvent):Void
+    private function onSeekRequest(e:PlaymachineEvent):Void
     {
-        seek(cast(e.detail));
+        seek(cast(e.data));
     }
 
-    private function onRemoveRequest(e:CustomEvent):Void
+    private function onRemoveRequest(e:PlaymachineEvent):Void
     {
-        var t:Track = cast(e.detail);
+        var t:Track = cast(e.data);
         if(t.id == track.id) {
             untyped useFlashPlayer ? flashPlayer.load("") : audio.setAttribute('src','');
             track = null;
@@ -174,15 +176,15 @@ class AudioManager extends Component
         }
     }
 
-    private function onPlayRequest(e:CustomEvent):Void
+    private function onPlayRequest(e:PlaymachineEvent):Void
     {
-        track = cast(e.detail);
+        track = cast(e.data);
         untyped useFlashPlayer ? flashPlayer.load(track.file) : audio.setAttribute('src',track.file);
         play();
     }
 
     private function onTrackEnded(evt:Event):Void
     {
-        dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
+        application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
     }
 }

@@ -1,14 +1,22 @@
-package ebztracker.events;
+package playmachine.event;
+
+#if js
+import js.html.Event;
+#else
+import flash.events.Event;
+#end
+
+import playmachine.event.IEventDispatcher;
 
 /**
  * Very simple EventDispatcher class for HAXE
  */
-class EventDispatcher extends IEventDispatcher
+class EventDispatcher implements IEventDispatcher
 {
     /**
      * Holds the listeners function
      */
-    private var listeners:Hash<Array<Dynamic>>;
+    private var listeners:Map<String,Dynamic>;
 
     /**
      * Constructor
@@ -19,7 +27,7 @@ class EventDispatcher extends IEventDispatcher
      */
     public function new(?target:Dynamic)
     {
-        listeners = new Hash();
+        listeners = new Map();
     }
 
     public function addEventListener(type:String, listener:Dynamic, ?useCapture:Bool = false):Void
@@ -65,8 +73,3 @@ class EventDispatcher extends IEventDispatcher
     }
 
 }
-
-/**
- * just for flash compilation compatibility
- */
-class IEventDispatcher {}

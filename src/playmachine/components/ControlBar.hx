@@ -1,27 +1,28 @@
-package playmachine.ui;
+package playmachine.components;
 
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
+import playmachine.helpers.HtmlElementHelper;
+using playmachine.helpers.HtmlElementHelper;
 import playmachine.data.Track;
-import application.model.Component;
-import playmachine.event.Events;
-import js.Lib;
-import js.Dom;
+import playmachine.core.Component;
+import playmachine.event.PlaymachineEvent;
 import haxe.Json;
 import haxe.Template;
 import haxe.Resource;
-import application.core.Logger;
 import playmachine.core.Constants;
+
+import js.html.HtmlElement;
+import js.html.Event;
+import js.html.MouseEvent;
 
 class ControlBar extends Component
 {
-    private var playPauseButton:HtmlDom;
-    private var previousButton:HtmlDom;
-    private var forwardButton:HtmlDom;
-    private var muteButton:HtmlDom;
-    private var soundLevel:HtmlDom;
+    private var playPauseButton:HtmlElement;
+    private var previousButton:HtmlElement;
+    private var forwardButton:HtmlElement;
+    private var muteButton:HtmlElement;
+    private var soundLevel:HtmlElement;
 
     private var playing:Bool;
 
@@ -42,16 +43,16 @@ class ControlBar extends Component
 
         updateSoundLevel();
 
-        global.addEventListener(HTML5AudioEvents.AUDIO_PLAY,onPlay,false);
-        global.addEventListener(HTML5AudioEvents.AUDIO_PAUSE,onPause,false);
-        global.addEventListener(HTML5AudioEvents.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
+        application.addEventListener(AudioEvent.AUDIO_PLAY,onPlay,false);
+        application.addEventListener(AudioEvent.AUDIO_PAUSE,onPause,false);
+        application.addEventListener(AudioEvent.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
 
         forwardButton.addEventListener('click',function(e:Event):Void {
-            dispatchEventOnGroup(Events.NEXT_TRACK_REQUEST);
+            application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
         },false);
 
         previousButton.addEventListener('click',function(e:Event):Void {
-            dispatchEventOnGroup(Events.PREVIOUS_TRACK_REQUEST);
+            application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.PREVIOUS_TRACK_REQUEST));
         },false);
 
         muteButton.addEventListener('click',function(e:Event):Void {
@@ -59,7 +60,7 @@ class ControlBar extends Component
         },false);
 
         playPauseButton.addEventListener('click',function(e:Event):Void {
-            dispatchEventOnGroup(playing ? Events.PAUSE_REQUEST : Events.PLAY_REQUEST);
+            application.dispatchEvent(new PlaymachineEvent(playing ? PlaymachineEvent.PAUSE_REQUEST : PlaymachineEvent.PLAY_REQUEST));
         },false);
 
         soundLevel.addEventListener('mousedown', cast(onSoundDown), false);
@@ -73,8 +74,8 @@ class ControlBar extends Component
     {
         (volume == 0) ? muteButton.addClass('muted') : muteButton.removeClass('muted');
 
-        var level:HtmlDom = soundLevel.getElementByClassName('level');
-        var knob:HtmlDom = soundLevel.getElementByClassName('knob');
+        var level:HtmlElement = soundLevel.getElementByClassName('level');
+        var knob:HtmlElement = soundLevel.getElementByClassName('knob');
 
         level.style.width = volume + "%";
 
@@ -93,11 +94,11 @@ class ControlBar extends Component
 
     private function sendVolumeRequest(volumePercent:Float):Void
     {
-        dispatchEventOnGroup(Events.VOLUME_REQUEST, volumePercent);
+        application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.VOLUME_REQUEST, volumePercent));
     }
 
 
-    private function onVolumeChange(evt:CustomEvent):Void
+    private function onVolumeChange(evt:PlaymachineEvent):Void
     {
         var audio:AudioData = cast(evt.detail);
 
@@ -161,7 +162,7 @@ class ControlBar extends Component
      */
     private function onSoundClick(evt:MouseEvent):Void
     {
-        var target:HtmlDom = cast(evt.target);
+        var target:HtmlElement = cast(evt.target);
 
         sendVolumeRequest((target.getPercentClick(evt) * 100));
     }

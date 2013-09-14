@@ -1,19 +1,18 @@
-package playmachine.model;
+package playmachine.core;
 
+import js.html.HtmlElement;
+import playmachine.event.IEventDispatcher;
 
-interface IApplication
+interface IApplication extends IEventDispatcher
 {
     private var data:Dynamic;
 
     private var components:Array<IComponent>;
 
-    private var rootNode:HtmlDom;
-
-    public function new(container:HtmlDom,data:Dynamic);
+    private var rootNode:HtmlElement;
 
     private function declareComponents():Void;
 
-    public static function main():Void;
     private function initComponents():Void;
     private function parseTemplate(tmpl:String):Void;
 

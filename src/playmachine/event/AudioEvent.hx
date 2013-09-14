@@ -1,12 +1,19 @@
 package playmachine.event;
 
+#if js
+import js.html.Event;
+#else
+import flash.events.Event;
+#end
+
+import playmachine.data.AudioData;
 
 /**
  * HTML5 <audio> tag events
  *
  * see http://www.w3.org/wiki/HTML/Elements/audio
  */
-class HTML5AudioEvents
+class AudioEvent extends Event
 {
     public static inline var AUDIO_LOADSTART:String = "loadstart";    //The user agent begins looking for media data, as part of the resource selection algorithm.
     public static inline var AUDIO_PROGRESS:String = "progress";     //The user agent is fetching media data.
@@ -31,8 +38,13 @@ class HTML5AudioEvents
     public static inline var AUDIO_DURATIONCHANGE:String = "durationchange";   //The duration attribute has just been updated.
     public static inline var AUDIO_VOLUMECHANGE:String = "volumechange";     //Either the volume attribute or the muted attribute has changed. Fired after the relevant attribute's setter has returned.
 
-    // CUSTOM event
-    public static inline var AUDIO_READY:String = "audioReady";
+    public var data:AudioData;
 
+    public function new(type:String,data:AudioData)
+    {
+        super(type);
+
+        this.data = data;
+    }
 }
 

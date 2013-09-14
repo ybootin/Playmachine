@@ -1,24 +1,13 @@
 package playmachine.application;
 
-import js.Dom;
-import js.Lib;
-import haxe.xml.Parser;
-import haxe.xml.Fast;
+import playmachine.core.Application;
 
 class PlayMachine extends Application
 {
 	/**
-	 * JS current init
-	 */
-	public static function init(container:HtmlDom,data:Dynamic):Void
-	{
-		return new PlayMachine(container,data);
-	}
-
-	/**
 	 * HaXe bootstrap
 	 */
-	override public static function main():Void
+	static public function main():Void
 	{
 #if flash
 		new PlayMachine(loaderInfo.parameters.init);
@@ -32,11 +21,11 @@ class PlayMachine extends Application
 	{
 		// Store components className and order
 		components = [
-			new application.components.AudioManager(this,'AudioManager'),
-			new application.components.ControlBar(this,'controlBar'),
-			new application.components.PlaylistPanel(this,'PlaylistPanel'),
-			new application.components.SeekBar(this,'SeekBar'),
-			new application.components.TrackImage(this,'TrackImage')
+			new playmachine.components.AudioManager(this,'AudioManager'),
+			new playmachine.components.ControlBar(this,'controlBar'),
+			new playmachine.components.PlaylistPanel(this,'PlaylistPanel'),
+			new playmachine.components.SeekBar(this,'SeekBar'),
+			new playmachine.components.TrackImage(this,'TrackImage')
 		];
 	}
 

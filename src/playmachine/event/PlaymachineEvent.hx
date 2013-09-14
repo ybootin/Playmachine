@@ -1,6 +1,6 @@
 package playmachine.event;
 
-class Events
+class PlaymachineEvent extends ApplicationEvent
 {
     public static inline var NEXT_TRACK_REQUEST:String = 'nextTrackRequest';
     public static inline var PREVIOUS_TRACK_REQUEST:String = "previousTrackRequest";

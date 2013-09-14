@@ -1,40 +1,40 @@
-package playmachine.application;
+package playmachine.core;
 
 import playmachine.event.EventDispatcher;
-import playmachine.model.IComponent;
+import playmachine.event.ApplicationEvent;
+import playmachine.core.IComponent;
 
-import js.Dom;
-import js.Lib;
+import js.Browser;
+import js.html.HtmlElement;
 
-import haxe.xml.Parser;
-import haxe.xml.Fast;
+import haxe.Resource;
 
-class Application extends EventDispatcher, implements IApplication
+
+class Application extends EventDispatcher implements IApplication
 {
     private static inline var TEMPLATE_RESOURCE_NAME:String = 'template';
 
-    private var data:Dynamic;
+    public var data:Dynamic;
 
-    private var components:Array<IComponent>;
+    public var components:Array<IComponent>;
 
-    private var rootNode:HtmlDom;
+    private var rootNode:HtmlElement;
 
 #if js
-    public function new(container:HtmlDom,data:Dynamic)
+    public function new(container:HtmlElement,data:Dynamic,?eventHandler:Dynamic = null)
     {
+        super();
+
         //js boot specific
         rootNode = container;
 #elseif flash
     public function new(data:Dynamic)
     {
-        //flash boot specific
-        var rootNode:HtmlDom = Lib.document.body;
+        // Better trace
+        haxe.Log.trace = playmachine.helpers.LogHelper.trace;
 #end
 
         this.data = data;
-
-        declareComponents();
-        initComponents();
 
         var tmpl:String;
         if(data.template != null) {
@@ -45,9 +45,6 @@ class Application extends EventDispatcher, implements IApplication
         }
 
         parseTemplate(tmpl);
-
-        // Honey, the app is ready !
-        dispatchEvent(new ApplicationEvent('ready'));
     }
 
 
@@ -71,23 +68,53 @@ class Application extends EventDispatcher, implements IApplication
 
     private function initComponents():Void
     {
+        declareComponents();
+
         //init component after all are instanciated
         for(i in 0...components.length) {
             components[i].init();
         }
+
+        dispatchEvent(new ApplicationEvent(ApplicationEvent.APPLICATION_READY));
     }
 
     private function parseTemplate(tmpl:String):Void
     {
-        var xml:Xml = Parser.parse(tmpl);
-        var fast:Fast = new Fast(xml);
+        var xml:Xml = Xml.parse(tmpl);
 
-        var stylesheets:Array<String> = [];
-        // parse head, and retrieve stylesheets (and script for js)
+        var body:String = "";
+        for(node in xml.elementsNamed('html')) {
 
-        // retrieve the body, inject the styles sheets, and append root node
-        var body:String = fast.node.html.node.body.toString();
-
+            for(hnode in node.elementsNamed('head')) {
+                for(lnode in hnode.elementsNamed('link')) {
+                    body += lnode.toString();
+                }
+                for(snode in hnode.elementsNamed('style')) {
+                    body += snode.toString();
+                }
+            }
+            for(bnode in node.elementsNamed('body')) {
+                body += bnode.toString();
+            }
+        }
+#if js
         rootNode.innerHTML = body;
+        initComponents();
+#else
+        //init cocktail
+        cocktail.api.Cocktail.boot();
+
+#if flash
+        // IMPORTANT, do this otherwise the app will fit to the swf-header width/height
+        flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+#end
+        //when document is loaded, set the content of the body
+        Browser.window.onload = function(e) {
+            Browser.document.body.innerHTML = body;
+            rootNode = Browser.document.body;
+
+            initComponents();
+        }
+#end
     }
 }

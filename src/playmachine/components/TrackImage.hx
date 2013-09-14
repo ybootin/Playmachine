@@ -1,13 +1,13 @@
-package playmachine.ui;
+package playmachine.components;
 
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.Track;
 import application.model.Component;
-import playmachine.event.Events;
+import playmachine.event.ApplicationEvent;
 import js.Lib;
 import js.Dom;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
+import playmachine.helpers.HtmlElementHelper;
+using playmachine.helpers.HtmlElementHelper;
 
 /**
  * Display the track image
@@ -18,15 +18,15 @@ class TrackImage extends Component
 
     override public function init():Void
     {
-        if(Lib.document.getElementsByTagName('img').length > 0) {
-            image = cast(Lib.document.getElementsByTagName('img')[0]);
+        if(Browser.document.getElementsByTagName('img').length > 0) {
+            image = cast(Browser.document.getElementsByTagName('img')[0]);
         }
         else {
-            image = cast(Lib.document.createElement('img'));
+            image = cast(Browser.document.createElement('img'));
             element.appendChild(image);
         }
 
-        global.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
+        application.addEventListener(ApplicationEvent.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
     }
 
     private function hide():Void
@@ -39,7 +39,7 @@ class TrackImage extends Component
         image.style.display = "block";
     }
 
-    private function onTrackChange(evt:CustomEvent):Void
+    private function onTrackChange(evt:ApplicationEvent):Void
     {
         var t:Track = cast(evt.detail);
         var src:String = t.image;

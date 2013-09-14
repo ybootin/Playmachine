@@ -1,18 +1,18 @@
-package playmachine.ui;
+package playmachine.components;
 
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
+import playmachine.helpers.HtmlElementHelper;
+using playmachine.helpers.HtmlElementHelper;
 import playmachine.data.Track;
 import application.model.Component;
-import playmachine.event.Events;
+import playmachine.event.ApplicationEvent;
 import js.Lib;
 import js.Dom;
 import haxe.Json;
 import haxe.Template;
 import haxe.Resource;
-import application.core.Logger;
+import haxe.ds.IntHash;
 
 class PlaylistPanel extends Component
 {
@@ -26,7 +26,7 @@ class PlaylistPanel extends Component
 
     private var tracksPosition:Array<Int>;
 
-    private var tracksElement:IntHash<HtmlDom>;
+    private var tracksElement:IntHash<HtmlElement>;
 
     override public function init():Void
     {
@@ -40,16 +40,16 @@ class PlaylistPanel extends Component
         tracksElement = new IntHash();
         tracksPosition = [];
 
-        global.addEventListener(Events.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
-        global.addEventListener(Events.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        global.addEventListener(Events.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        global.addEventListener(Events.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
-        global.addEventListener(Events.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
+        application.addEventListener(ApplicationEvent.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
+        application.addEventListener(ApplicationEvent.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
+        application.addEventListener(ApplicationEvent.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
+        application.addEventListener(ApplicationEvent.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
+        application.addEventListener(ApplicationEvent.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
 
         // init the tracks
         if(data.tracks != null) {
             for(i in 0...data.tracks.length) {
-                dispatchEventOnGroup(Events.ADD_TRACK_REQUEST,data.tracks[i]);
+                dispatchEventOnGroup(ApplicationEvent.ADD_TRACK_REQUEST,data.tracks[i]);
             }
         }
     }
@@ -57,18 +57,18 @@ class PlaylistPanel extends Component
     private function addTrack(t:Track):Void
     {
         var tpl:Template = new Template(template);
-        var e:HtmlDom = Lib.document.createElement('div');
+        var e:HtmlElement = Browser.document.createElement('div');
         e.innerHTML = tpl.execute({title:t.title,id:t.id});
 
         var onTrackClick = function(evt:Event):Void {
             if(tracks.exists(t.id)) {
-                dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,t);
+                dispatchEventOnGroup(ApplicationEvent.PLAY_TRACK_REQUEST,t);
             }
         }
 
-        var removeButton:HtmlDom = e.getElementByClassName('remove');
+        var removeButton:HtmlElement = e.getElementByClassName('remove');
         removeButton.addEventListener('click',function(evt:Event):Void {
-            dispatchEventOnGroup(Events.REMOVE_TRACK_REQUEST,t);
+            dispatchEventOnGroup(ApplicationEvent.REMOVE_TRACK_REQUEST,t);
 
             //remove the handler to avoid the click to be dispatched to the child element
             e.removeEventListener('click',onTrackClick,false);
@@ -84,7 +84,7 @@ class PlaylistPanel extends Component
         element.appendChild(e);
     }
 
-    private function onRemoveRequest(e:CustomEvent):Void
+    private function onRemoveRequest(e:ApplicationEvent):Void
     {
         var t:Track = cast(e.detail);
 
@@ -94,7 +94,7 @@ class PlaylistPanel extends Component
         tracksPosition.remove(t.id);
     }
 
-    private function onPlayRequest(e:CustomEvent):Void
+    private function onPlayRequest(e:ApplicationEvent):Void
     {
         if(currentTrack != null) {
             getTrackElement(currentTrack).removeClass('current');
@@ -104,7 +104,7 @@ class PlaylistPanel extends Component
         getTrackElement(currentTrack).addClass('current');
     }
 
-    private function onAddTrackRequest(e:CustomEvent):Void
+    private function onAddTrackRequest(e:ApplicationEvent):Void
     {
         var t:Track = cast(e.detail);
         addTrack(t);
@@ -119,7 +119,7 @@ class PlaylistPanel extends Component
             next = 0;
         }
 
-        dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[next]));
+        dispatchEventOnGroup(ApplicationEvent.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[next]));
     }
 
     private function onPreviousRequest(e:Event):Void
@@ -131,10 +131,10 @@ class PlaylistPanel extends Component
             prev = tracksPosition.length - 1;
         }
 
-        dispatchEventOnGroup(Events.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[prev]));
+        dispatchEventOnGroup(ApplicationEvent.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[prev]));
     }
 
-    private function getTrackElement(t:Track):HtmlDom
+    private function getTrackElement(t:Track):HtmlElement
     {
         return tracksElement.get(t.id).getElementByClassName('track');
     }

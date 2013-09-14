@@ -1,7 +1,8 @@
 package playmachine.helpers;
 
-import js.Dom;
-import js.Lib;
+import js.Browser;
+import js.html.Event;
+import js.html.Audio;
 
 class AudioHelper
 {

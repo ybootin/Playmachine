@@ -1,28 +1,14 @@
 -js bin/playMachine.js
--main application.core.Application
+-main playmachine.application.PlayMachine
 -debug
--cp lib/BrixCocktailApplication/lib/Brix/src
--cp lib/BrixCocktailApplication/lib/Cocktail/src
--cp lib/BrixCocktailApplication/src
 -cp src
---macro slplayer.core.Builder.create('templates/player.html')
--resource templates/styles.css@styles
--D embedHtml
--D noAutoStart
--D haxeJSON
--D stopOnError
+-resource templates/player.html@template
 --next
 -swf bin/playMachine.swf
--main application.core.Application
+-main playmachine.application.PlayMachine
 -debug
--cp lib/BrixCocktailApplication/lib/Brix/src
--cp lib/BrixCocktailApplication/lib/Cocktail/src
--cp lib/BrixCocktailApplication/src
 -cp src
---macro slplayer.core.Builder.create('templates/player.html')
--resource templates/styles.css@styles
+-resource templates/player.html@template
+-lib cocktail
 --remap js:cocktail
--D embedHtml
--D haxeJSON
--D stopOnError
 -swf-version 10.2

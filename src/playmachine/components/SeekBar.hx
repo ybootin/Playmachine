@@ -1,13 +1,13 @@
-package playmachine.ui;
+package playmachine.components;
 
-import playmachine.event.HTML5AudioEvents;
+import playmachine.event.AudioEvent;
 import playmachine.data.AudioData;
 import application.model.Component;
-import playmachine.event.Events;
+import playmachine.event.ApplicationEvent;
 import js.Lib;
 import js.Dom;
-import application.helpers.HtmlDomHelper;
-using application.helpers.HtmlDomHelper;
+import playmachine.helpers.HtmlElementHelper;
+using playmachine.helpers.HtmlElementHelper;
 
 /**
  * The seekBar UI component
@@ -19,8 +19,8 @@ class SeekBar extends Component
      */
     private var audioData:AudioData;
 
-    private var played:HtmlDom;
-    private var buffered:HtmlDom;
+    private var played:HtmlElement;
+    private var buffered:HtmlElement;
 
     private var isDragging:Bool;
 
@@ -43,12 +43,12 @@ class SeekBar extends Component
         played.addEventListener('mousemove',cast(onMouseMove),false);
         buffered.addEventListener('mousemove',cast(onMouseMove),false);
 
-        global.addEventListener(HTML5AudioEvents.AUDIO_TIMEUPDATE,cast(onProgress),false);
-        global.addEventListener(HTML5AudioEvents.AUDIO_PROGRESS,cast(onBuffer),false);
+        application.addEventListener(AudioEvent.AUDIO_TIMEUPDATE,cast(onProgress),false);
+        application.addEventListener(AudioEvent.AUDIO_PROGRESS,cast(onBuffer),false);
 
-        global.addEventListener(Events.NEXT_TRACK_REQUEST,onTrackChange,false);
-        global.addEventListener(Events.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
-        global.addEventListener(Events.PLAY_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(ApplicationEvent.NEXT_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(ApplicationEvent.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(ApplicationEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function reset():Void
@@ -57,24 +57,24 @@ class SeekBar extends Component
         setBufferPositon(0);
     }
 
-    private function setProgressPosition(percent:Float):Void 
+    private function setProgressPosition(percent:Float):Void
     {
         played.style.width = percent + "%";
     }
 
-    private function setBufferPositon(percent:Float):Void 
+    private function setBufferPositon(percent:Float):Void
     {
         buffered.style.width = percent + "%";
     }
 
-    private function onProgress(evt:CustomEvent):Void
+    private function onProgress(evt:ApplicationEvent):Void
     {
         audioData = cast(evt.detail);
 
         setProgressPosition(audioData.percentPlayed);
     }
 
-    private function onBuffer(evt:CustomEvent):Void
+    private function onBuffer(evt:ApplicationEvent):Void
     {
         audioData = cast(evt.detail);
 
@@ -83,7 +83,7 @@ class SeekBar extends Component
 
     private function onClick(evt:MouseEvent):Void
     {
-        var target:HtmlDom = cast(evt.target);
+        var target:HtmlElement = cast(evt.target);
 
         var isBufferBar:Bool = (target.className.indexOf('buffered') != -1);
 
@@ -91,21 +91,21 @@ class SeekBar extends Component
         var percentAdapt = (isBufferBar ? 1 : (audioData.currentTime / audioData.duration * (1 /(audioData.percentLoaded / 100))));
         var seekPercent:Float = target.getPercentClick(evt) * 100 * percentAdapt;
 
-        dispatchEventOnGroup(Events.SEEK_REQUEST,seekPercent);
+        dispatchEventOnGroup(ApplicationEvent.SEEK_REQUEST,seekPercent);
     }
 
-    private function onMouseDown(evt:MouseEvent):Void 
+    private function onMouseDown(evt:MouseEvent):Void
     {
         isDragging = true;
         onClick(evt);
     }
 
-    private function onMouseUp(evt:MouseEvent):Void 
+    private function onMouseUp(evt:MouseEvent):Void
     {
         isDragging = false;
     }
 
-    private function onMouseMove(evt:MouseEvent):Void 
+    private function onMouseMove(evt:MouseEvent):Void
     {
         if (isDragging) {
             onClick(evt);
