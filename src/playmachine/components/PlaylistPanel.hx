@@ -113,7 +113,7 @@ class PlaylistPanel extends Component
         addTrack(t);
     }
 
-    private function onNextRequest(e:Event):Void
+    private function onNextRequest(e:PlaymachineEvent):Void
     {
         var pos:Int = Lambda.indexOf(tracksPosition,currentTrack.id);
 
@@ -125,7 +125,7 @@ class PlaylistPanel extends Component
         application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.PLAY_TRACK_REQUEST,tracks.get(tracksPosition[next])));
     }
 
-    private function onPreviousRequest(e:Event):Void
+    private function onPreviousRequest(e:PlaymachineEvent):Void
     {
         var pos:Int = Lambda.indexOf(tracksPosition,currentTrack.id);
 

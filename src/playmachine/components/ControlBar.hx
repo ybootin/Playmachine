@@ -33,13 +33,18 @@ class ControlBar extends Component
 
     override public function init():Void
     {
+        // Check if element exists !
+        if(element == null) {
+            return;
+        }
+
         volume = Constants.DEFAULT_SOUND_LEVEL;
 
-        playPauseButton = element.getElementByClassName('playPauseButton');
-        previousButton = element.getElementByClassName('previousButton');
-        forwardButton = element.getElementByClassName('forwardButton');
-        muteButton = element.getElementByClassName('muteButton');
-        soundLevel = element.getElementByClassName('soundLevel');
+        playPauseButton = getChildElement('playPauseButton');
+        previousButton = getChildElement('previousButton');
+        forwardButton = getChildElement('forwardButton');
+        muteButton = getChildElement('muteButton');
+        soundLevel = getChildElement('soundLevel');
 
         updateSoundLevel();
 
@@ -109,13 +114,13 @@ class ControlBar extends Component
         updateSoundLevel();
     }
 
-    private function onPlay(e:Event):Void
+    private function onPlay(e:AudioEvent):Void
     {
         playing = true;
         playPauseButton.addClass('playing');
     }
 
-    private function onPause(e:Event):Void
+    private function onPause(e:AudioEvent):Void
     {
         playing = false;
         playPauseButton.removeClass('playing');

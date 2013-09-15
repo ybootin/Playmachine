@@ -1,7 +1,7 @@
 package playmachine.event;
 
 #if js
-import js.html.Event;
+import playmachine.event.Event;
 #else
 import flash.events.Event;
 #end

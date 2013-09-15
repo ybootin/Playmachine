@@ -22,13 +22,33 @@ class LogHelper
             if (infos != null) {
                 msg = infos.fileName + ':' + infos.lineNumber + ': ' + msg + ' (' + infos.className + '.' + infos.methodName + ')';
             }
-
+#if flash
             if (ExternalInterface.available) {
                 ExternalInterface.call('console.log', '[' + APPLICATION_NAME + '] ' + msg);
             }
             else {
                 trace('[' + APPLICATION_NAME + '] ' + msg);
             }
+#else
+            untyped console.log('[' + APPLICATION_NAME + '] ' + msg);
+#end
         }
+    }
+
+    /**
+     * Force a trace, even is debug is not activated
+     * @param  msg [description]
+     * @return     [description]
+     */
+    public static function forceTrace(msg):Void
+    {
+        if(debug) {
+            trace(msg);
+            return;
+        }
+
+        debug = true;
+        trace(msg);
+        debug = false;
     }
 }

@@ -5,8 +5,8 @@ import js.html.HtmlElement;
 
 import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.HtmlElementHelper;
-
 import playmachine.event.EventDispatcher;
+import playmachine.event.ErrorEvent;
 
 class Component extends EventDispatcher implements IComponent
 {
@@ -24,7 +24,7 @@ class Component extends EventDispatcher implements IComponent
         this.application = application;
 
         if(nodeClassName == null) {
-            // no htmlElement for this component
+            element = cast(Browser.document.createElement('div'));
         }
         else {
         	try {
@@ -32,6 +32,7 @@ class Component extends EventDispatcher implements IComponent
         	}
         	catch(e:Dynamic) {
         		// no html element attached to node
+                dispatchError('WARNING, cannot use ' + nodeClassName + ' for component ' + Type.typeof(this) + ", HtmlElement doesn't exists in the DOM",e);
         	}
         }
     }
@@ -52,5 +53,11 @@ class Component extends EventDispatcher implements IComponent
     public function getChildElement(className:String):HtmlElement
     {
         return element.getElementByClassName(className);
+    }
+
+    function dispatchError(msg:String,errorData:Dynamic):Void
+    {
+        trace(msg);
+        application.dispatchEvent(new ErrorEvent('error',errorData));
     }
 }

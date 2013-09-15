@@ -38,12 +38,12 @@ class AudioManager extends Component
 
         application.addEventListener(PlaymachineEvent.AUDIO_READY,onReady,false);
 
-        audio = cast(element.getElementByClassName('audio'));
+        audio = cast(getChildElement('audio'));
 
 #if js
         //Browser doesn't supper MP3
         if(!audio.hasMP3()) {
-            //appendFlashPlayer();
+            appendFlashPlayer();
         }
 #end
 
@@ -108,6 +108,7 @@ class AudioManager extends Component
                 application.dispatchEvent(new AudioEvent(eventName,eventData));
             };
 
+            // IMPORTANT, attach the callback function to the window object
             Reflect.setField(Browser.window,jshandlerName,playmachinejshandler);
 
             var mp3player:HtmlElement = cast(Browser.document.createElement('div'));
@@ -141,15 +142,14 @@ class AudioManager extends Component
         application.addEventListener(PlaymachineEvent.SEEK_REQUEST,cast(onSeekRequest),false);
         application.addEventListener(PlaymachineEvent.VOLUME_REQUEST,cast(onVolumeRequest),false);
 
-        application.addEventListener(PlaymachineEvent.PLAY_REQUEST,function(e:Event):Void {
+        application.addEventListener(PlaymachineEvent.PLAY_REQUEST,cast(function(e:PlaymachineEvent):Void {
             play();
-        },false);
-        application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,function(e:Event):Void {
+        }),false);
+        application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,cast(function(e:PlaymachineEvent):Void {
             pause();
-        },false);
+        }),false);
 
         application.addEventListener(AudioEvent.AUDIO_ENDED,cast(onTrackEnded),false);
-
     }
 
     private function onReady(evt:PlaymachineEvent):Void

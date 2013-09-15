@@ -31,8 +31,8 @@ class SeekBar extends Component
     {
         audioData = new AudioData();
 
-        played = element.getElementByClassName('played');
-        buffered = element.getElementByClassName('buffered');
+        played = getChildElement('played');
+        buffered = getChildElement('buffered');
 
         reset();
 

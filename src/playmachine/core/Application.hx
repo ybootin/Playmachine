@@ -2,6 +2,8 @@ package playmachine.core;
 
 import playmachine.event.EventDispatcher;
 import playmachine.event.ApplicationEvent;
+import playmachine.event.ErrorEvent;
+
 import playmachine.core.IComponent;
 
 import js.Browser;
@@ -20,6 +22,8 @@ class Application extends EventDispatcher implements IApplication
 
     private var rootNode:HtmlElement;
 
+    @:isVar public var debug(default,set):Bool;
+
 #if js
     public function new(container:HtmlElement,data:Dynamic,?eventHandler:Dynamic = null)
     {
@@ -37,6 +41,8 @@ class Application extends EventDispatcher implements IApplication
 #end
 
         this.data = data;
+
+        set_debug(data.debug != null && data.debug == true);
 
         var tmpl:String;
         if(data.template != null) {
@@ -118,5 +124,22 @@ class Application extends EventDispatcher implements IApplication
             initComponents();
         }
 #end
+    }
+
+    public function appendChild(elt:HtmlElement):Void
+    {
+        rootNode.appendChild(elt);
+    }
+
+    /**
+     * Haxe 3 setter
+     * @param activate [description]
+     */
+    private function set_debug(activate:Bool):Bool
+    {
+        debug = activate;
+        playmachine.helpers.LogHelper.debug = activate;
+
+        return activate;
     }
 }
