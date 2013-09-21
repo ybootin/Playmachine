@@ -143,9 +143,9 @@ class CrossAudio extends EventDispatcher
         }
 #else
         mp3player = new MP3Player();
-        flash.Lib.current.stage.addChild(mp3player);
 #end
 
+//flash version always use mp3player
 #if js
         if(!useMP3Player) {
 #end
@@ -169,7 +169,5 @@ class CrossAudio extends EventDispatcher
 #if js
         }
 #end
-
-
     }
 }

@@ -44,24 +44,28 @@ class AudioManager extends Component
 
     private function initListeners():Void
     {
-        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        application.addEventListener(PlaymachineEvent.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        application.addEventListener(PlaymachineEvent.SEEK_REQUEST,cast(onSeekRequest),false);
-        application.addEventListener(PlaymachineEvent.VOLUME_REQUEST,cast(onVolumeRequest),false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onPlayRequest,false);
+        application.addEventListener(PlaymachineEvent.REMOVE_TRACK_REQUEST,onRemoveRequest,false);
+        application.addEventListener(PlaymachineEvent.SEEK_REQUEST,onSeekRequest,false);
+        application.addEventListener(PlaymachineEvent.VOLUME_REQUEST,onVolumeRequest,false);
 
-        application.addEventListener(PlaymachineEvent.PLAY_REQUEST,cast(function(e:PlaymachineEvent):Void {
+        application.addEventListener(PlaymachineEvent.PLAY_REQUEST,function(e:PlaymachineEvent):Void {
             audio.play();
         }),false);
-        application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,cast(function(e:PlaymachineEvent):Void {
+        application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,function(e:PlaymachineEvent):Void {
             audio.pause();
         }),false);
 
-        application.addEventListener(AudioEvent.AUDIO_ENDED,cast(onTrackEnded),false);
+        audio.addEventListener(AudioEvent.AUDIO_ENDED,onTrackEnded,false);
+    }
+
+    private function onTrackEnded(evt:AudioEvent):Void
+    {
+        application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
     }
 
     private function onReady(evt:PlaymachineEvent):Void
     {
-        trace('ready');
         initListeners();
         audio.setVolume(Constants.DEFAULT_SOUND_LEVEL);
     }
@@ -80,9 +84,9 @@ class AudioManager extends Component
     {
         var t:Track = cast(e.data);
         if(t.id == currentTrack.id) {
+            audio.pause();
             audio.unload();
             currentTrack = null;
-            audio.pause();
         }
     }
 
@@ -91,10 +95,5 @@ class AudioManager extends Component
         currentTrack = cast(e.data);
         audio.load(currentTrack.file);
         audio.play();
-    }
-
-    private function onTrackEnded(evt:PlaymachineEvent):Void
-    {
-        application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
     }
 }
