@@ -1,21 +1,18 @@
 package playmachine.data;
 
-
-class Track
-{
-    public var id:Int;
-
-    public var title:String;
-
+/**
+ * Use type for flash cast
+ */
+typedef Track = {
+    id:Int,
+    title:String,
     /**
      * The mp3 file absolute url
      * ex : http://mywebsite/myfolder/my.mp3
      */
-    public var file:String;
-
+    file:String,
     /**
      * The absolute path to the track image
      */
-    public var image:String;
-
+    image:String
 }

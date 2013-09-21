@@ -1,7 +1,12 @@
 package playmachine.core;
 
 import js.html.HtmlElement;
+
+#if js
 import playmachine.event.IEventDispatcher;
+#else
+import flash.events.IEventDispatcher;
+#end
 
 interface IApplication extends IEventDispatcher
 {

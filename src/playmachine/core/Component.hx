@@ -5,7 +5,13 @@ import js.html.HtmlElement;
 
 import playmachine.helpers.HtmlElementHelper;
 using playmachine.helpers.HtmlElementHelper;
+
+#if js
 import playmachine.event.EventDispatcher;
+#else
+import flash.events.EventDispatcher;
+#end
+
 import playmachine.event.ErrorEvent;
 
 class Component extends EventDispatcher implements IComponent

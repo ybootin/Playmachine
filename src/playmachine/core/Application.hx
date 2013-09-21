@@ -1,6 +1,10 @@
 package playmachine.core;
 
+#if js
 import playmachine.event.EventDispatcher;
+#else
+import flash.events.EventDispatcher;
+#end
 import playmachine.event.ApplicationEvent;
 import playmachine.event.ErrorEvent;
 
@@ -50,7 +54,7 @@ class Application extends EventDispatcher implements IApplication
             debug = Reflect.field(data,'debug');
         }
 
-        set_debug(debug);
+        set_debug(true);
 
         var tmpl:String;
         if(Reflect.hasField(data,'template') && Reflect.field(data,'template') != null) {

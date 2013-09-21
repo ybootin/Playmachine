@@ -15,6 +15,8 @@ import haxe.ds.IntMap;
 
 import js.html.HtmlElement;
 import js.html.Event;
+import js.html.MouseEvent;
+
 import js.Browser;
 
 class PlaylistPanel extends Component
@@ -49,7 +51,6 @@ class PlaylistPanel extends Component
         application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
         application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
 
-
         // init the tracks
         if(application.data.tracks != null) {
             for(i in 0...application.data.tracks.length) {
@@ -64,7 +65,7 @@ class PlaylistPanel extends Component
         var e:HtmlElement = cast(Browser.document.createElement('div'));
         e.innerHTML = tpl.execute({title:t.title,id:t.id});
 
-        var onTrackClick = function(evt:Event):Void {
+        var onTrackClick = function(evt:MouseEvent):Void {
             if(tracks.exists(t.id)) {
                 application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.PLAY_TRACK_REQUEST,t));
             }
@@ -75,10 +76,10 @@ class PlaylistPanel extends Component
             application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.REMOVE_TRACK_REQUEST,t));
 
             //remove the handler to avoid the click to be dispatched to the child element
-            e.removeEventListener('click',onTrackClick,false);
+            e.removeEventListener('click',cast(onTrackClick),false);
         },true);
 
-        e.addEventListener('click',onTrackClick,false);
+        e.addEventListener('click',cast(onTrackClick),false);
 
         // add track to the stack
         tracks.set(t.id,t);
