@@ -19,7 +19,7 @@ import haxe.Json;
 
 class Application extends EventDispatcher implements IApplication
 {
-    private static inline var TEMPLATE_RESOURCE_NAME:String = 'template';
+    private static var TEMPLATE_RESOURCE_NAME:String = 'template';
 
     public var data:Dynamic;
 

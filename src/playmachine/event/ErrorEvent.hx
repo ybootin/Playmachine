@@ -4,7 +4,7 @@ import playmachine.event.Event;
 
 class ErrorEvent extends Event
 {
-    public static inline var ERROR:String = 'error';
+    public static var ERROR:String = 'error';
 
     public var errorData:Dynamic;
     public var exception:Dynamic;

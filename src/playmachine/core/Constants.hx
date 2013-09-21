@@ -2,5 +2,5 @@ package playmachine.core;
 
 class Constants
 {
-    public static inline var DEFAULT_SOUND_LEVEL:Int = 70;
+    public static var DEFAULT_SOUND_LEVEL:Int = 70;
 }

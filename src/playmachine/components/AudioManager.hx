@@ -11,8 +11,6 @@ import playmachine.data.AudioData;
 import playmachine.core.Constants;
 import playmachine.core.CrossAudio;
 
-import js.Browser;
-import js.html.Event;
 
 import haxe.Timer;
 
@@ -95,7 +93,7 @@ class AudioManager extends Component
         audio.play();
     }
 
-    private function onTrackEnded(evt:Event):Void
+    private function onTrackEnded(evt:PlaymachineEvent):Void
     {
         application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
     }

@@ -146,8 +146,9 @@ class CrossAudio extends EventDispatcher
         flash.Lib.current.stage.addChild(mp3player);
 #end
 
+#if js
         if(!useMP3Player) {
-
+#end
             //init events
             var events:Array<String> = Type.getClassFields(AudioEvent);
 
@@ -156,15 +157,18 @@ class CrossAudio extends EventDispatcher
 #if js
                 audio.addEventListener(eventName,function(e:Event):Void {
 #else
-                mp3player.addEventListener(eventName,function(e:Event):Void {
+                mp3player.addEventListener(eventName,function(e:AudioEvent):Void {
 #end
                     dispatchEvent(new AudioEvent(e.type, getAudioData()));
                 },false);
+
             }
 
             //now audio is ready
             dispatchEvent(new PlaymachineEvent(PlaymachineEvent.AUDIO_READY));
+#if js
         }
+#end
 
 
     }

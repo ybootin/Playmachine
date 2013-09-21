@@ -27,7 +27,7 @@ class MP3Player extends Sprite
     /**
      * Holds the default delay for sending timeupdate event
      */
-    public static inline var TIMEUPDATE_DELAY:Int = 200;
+    public static var TIMEUPDATE_DELAY:Int = 200;
 
     /**
      * Holds the global js function that will handle event

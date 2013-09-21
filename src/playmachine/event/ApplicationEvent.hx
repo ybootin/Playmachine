@@ -8,7 +8,7 @@ import flash.events.Event;
 
 class ApplicationEvent extends Event
 {
-    public static inline var APPLICATION_READY:String = "ready";
+    public static var APPLICATION_READY:String = "ready";
 
     public var data:Dynamic;
 

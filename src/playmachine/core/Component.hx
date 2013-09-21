@@ -1,5 +1,7 @@
 package playmachine.core;
 
+import playmachine.core.IApplication;
+
 import js.Browser;
 import js.html.HtmlElement;
 
