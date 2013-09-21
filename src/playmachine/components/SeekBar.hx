@@ -46,12 +46,12 @@ class SeekBar extends Component
         played.addEventListener('mousemove',cast(onMouseMove),false);
         buffered.addEventListener('mousemove',cast(onMouseMove),false);
 
-        application.addEventListener(AudioEvent.AUDIO_TIMEUPDATE,cast(onProgress),false);
-        application.addEventListener(AudioEvent.AUDIO_PROGRESS,cast(onBuffer),false);
+        application.addEventListener(AudioEvent.AUDIO_TIMEUPDATE,onProgress,false);
+        application.addEventListener(AudioEvent.AUDIO_PROGRESS,onBuffer,false);
 
-        application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,cast(onTrackChange),false);
-        application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,cast(onTrackChange),false);
-        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
+        application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,onTrackChange,false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function reset():Void

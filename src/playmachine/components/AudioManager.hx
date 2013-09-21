@@ -51,10 +51,10 @@ class AudioManager extends Component
 
         application.addEventListener(PlaymachineEvent.PLAY_REQUEST,function(e:PlaymachineEvent):Void {
             audio.play();
-        }),false);
+        },false);
         application.addEventListener(PlaymachineEvent.PAUSE_REQUEST,function(e:PlaymachineEvent):Void {
             audio.pause();
-        }),false);
+        },false);
 
         audio.addEventListener(AudioEvent.AUDIO_ENDED,onTrackEnded,false);
     }

@@ -45,11 +45,11 @@ class PlaylistPanel extends Component
         tracksElement = new IntMap();
         tracksPosition = [];
 
-        application.addEventListener(PlaymachineEvent.ADD_TRACK_REQUEST,cast(onAddTrackRequest),false);
-        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onPlayRequest),false);
-        application.addEventListener(PlaymachineEvent.REMOVE_TRACK_REQUEST,cast(onRemoveRequest),false);
-        application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
-        application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
+        application.addEventListener(PlaymachineEvent.ADD_TRACK_REQUEST,onAddTrackRequest,false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onPlayRequest,false);
+        application.addEventListener(PlaymachineEvent.REMOVE_TRACK_REQUEST,onRemoveRequest,false);
+        application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,onNextRequest,false);
+        application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,onPreviousRequest,false);
 
         // init the tracks
         if(application.data.tracks != null) {

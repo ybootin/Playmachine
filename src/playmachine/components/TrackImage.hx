@@ -27,7 +27,7 @@ class TrackImage extends Component
             element.appendChild(image);
         }
 
-        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,cast(onTrackChange),false);
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function hide():Void

@@ -50,7 +50,7 @@ class ControlBar extends Component
 
         application.addEventListener(AudioEvent.AUDIO_PLAY,onPlay,false);
         application.addEventListener(AudioEvent.AUDIO_PAUSE,onPause,false);
-        application.addEventListener(AudioEvent.AUDIO_VOLUMECHANGE,cast(onVolumeChange),false);
+        application.addEventListener(AudioEvent.AUDIO_VOLUMECHANGE,onVolumeChange,false);
 
         forwardButton.addEventListener('click',function(e:Event):Void {
             application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.NEXT_TRACK_REQUEST));
