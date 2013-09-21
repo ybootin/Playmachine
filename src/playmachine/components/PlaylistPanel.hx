@@ -49,6 +49,7 @@ class PlaylistPanel extends Component
         application.addEventListener(PlaymachineEvent.NEXT_TRACK_REQUEST,cast(onNextRequest),false);
         application.addEventListener(PlaymachineEvent.PREVIOUS_TRACK_REQUEST,cast(onPreviousRequest),false);
 
+
         // init the tracks
         if(application.data.tracks != null) {
             for(i in 0...application.data.tracks.length) {

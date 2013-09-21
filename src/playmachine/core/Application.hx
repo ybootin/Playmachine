@@ -10,6 +10,7 @@ import js.Browser;
 import js.html.HtmlElement;
 
 import haxe.Resource;
+import haxe.Json;
 
 
 class Application extends EventDispatcher implements IApplication
@@ -31,6 +32,8 @@ class Application extends EventDispatcher implements IApplication
 
         //js boot specific
         rootNode = container;
+
+        this.data = data;
 #elseif flash
     public function new(data:Dynamic)
     {
@@ -38,15 +41,20 @@ class Application extends EventDispatcher implements IApplication
 
         // Better trace
         haxe.Log.trace = playmachine.helpers.LogHelper.trace;
+
+        this.data = Json.parse(data);
 #end
 
-        this.data = data;
+        var debug:Bool = false;
+        if(Reflect.hasField(data,'debug')) {
+            debug = Reflect.field(data,'debug');
+        }
 
-        set_debug(data.debug != null && data.debug == true);
+        set_debug(debug);
 
         var tmpl:String;
-        if(data.template != null) {
-            tmpl = data.template;
+        if(Reflect.hasField(data,'template') && Reflect.field(data,'template') != null) {
+            tmpl = Reflect.field(data,'template');
         }
         else {
             tmpl = Resource.getString(TEMPLATE_RESOURCE_NAME);

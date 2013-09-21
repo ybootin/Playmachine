@@ -34,7 +34,7 @@
 
         //init the JS app
         var pm = new playmachine.application.PlayMachine(document.getElementById('container-js'),data);
-/*
+
         //init the flash app
         swfobject.embedSWF(
             'playMachine.swf',
@@ -44,7 +44,7 @@
             '10.2.0',
             null,
             {
-                'init': escape(JSON.stringify(data))
+                'data': escape(JSON.stringify(data))
             },
             {
                 'allowFullScreen': true,
@@ -57,7 +57,7 @@
                 'style':"background-color:#FFFFFF"
             }
         );
-*/
+
     }
     </script>
     <style>

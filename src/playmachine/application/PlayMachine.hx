@@ -2,7 +2,11 @@ package playmachine.application;
 
 import playmachine.core.Application;
 
+#if js
 @:expose class PlayMachine extends Application
+#else
+class PlayMachine extends Application
+#end
 {
 	/**
 	 * HaXe bootstrap
@@ -10,7 +14,7 @@ import playmachine.core.Application;
 	static public function main():Void
 	{
 #if flash
-		new PlayMachine(flash.Lib.current.loaderInfo.parameters.init);
+		new PlayMachine(flash.Lib.current.loaderInfo.parameters.data);
 #end
 	}
 

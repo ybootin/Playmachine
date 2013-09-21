@@ -58,6 +58,7 @@ class Component extends EventDispatcher implements IComponent
     function dispatchError(msg:String,errorData:Dynamic):Void
     {
         trace(msg);
-        application.dispatchEvent(new ErrorEvent('error',errorData));
+        //todo handle error
+        //application.dispatchEvent(new ErrorEvent('error',errorData));
     }
 }

@@ -90,9 +90,6 @@ class MP3Player extends Sprite
     {
         super();
 
-        //better trace ;)
-        haxe.Log.trace = playmachine.helpers.LogHelper.trace;
-
         jsEventHandler = flash.Lib.current.loaderInfo.parameters.handler;
 
         debug = cast(flash.Lib.current.loaderInfo.parameters.debug);
@@ -276,9 +273,14 @@ class MP3Player extends Sprite
      */
     private function dispatchEventToExternal(eventName:String):Void
     {
+        var data:AudioData = getAudioData();
+
         if(jsEventHandler != null) {
-            ExternalInterface.call(jsEventHandler,eventName,getAudioData());
+            ExternalInterface.call(jsEventHandler,eventName,data);
         }
+
+        // also dispatch event on this
+        dispatchEvent(new AudioEvent(eventName,data));
     }
 
     /**
@@ -332,7 +334,7 @@ class MP3Player extends Sprite
                 ExternalInterface.call('console.log', '[mp3player] ' + msg);
             }
             else {
-                trace('[mp3player] ' + msg);
+                //trace('[mp3player] ' + msg);
             }
         }
     }
