@@ -1,6 +1,7 @@
-PLAYMACHINE=bin/playMachine.*
+PLAYMACHINE=bin/playMachine.js bin/playMachine.swf
 MP3PLAYER=bin/mp3player.swf
-SOURCES=Makefile src/*/*/*.hx templates/*.html
+MP3PLAYERPARAMS=-main playmachine.application.MP3Player -swf bin/mp3player.swf -debug -cp src -swf-version 10.2
+SOURCES=Makefile src/*/*/*.hx templates/toonzshop/*.html
 
 make: playmachine mp3player
 playmachine: $(PLAYMACHINE)
@@ -8,9 +9,8 @@ mp3player: $(MP3PLAYER)
 
 $(PLAYMACHINE): $(SOURCES) build.hxml
 	haxe build.hxml
-	rm -Rf bin/images
-	cp -Rf templates/images/ bin/images/
-	cp templates/styles.css bin/
+	rm -Rf bin/assets
+	cp -Rf templates/toonzshop/assets/ bin/assets/
 
-$(MP3PLAYER): $(SOURCES) build-mp3player.hxml
-	haxe build-mp3player.hxml
+$(MP3PLAYER): $(SOURCES)
+	haxe $(MP3PLAYERPARAMS)
