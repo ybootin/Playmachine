@@ -1,6 +1,6 @@
 # override default template (default), "make TEMPLATE=templatefolder"
 if [ "$(TEMPLATE)" == "" ] ; then
-	TEMPLATE=toonzshop
+	TEMPLATE=default
 
 # override default template name (template.html)
 if [ "$(NAME)" == "" ] ; then
