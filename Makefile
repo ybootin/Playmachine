@@ -39,7 +39,7 @@ $(SWF): $(SOURCES)
 $(JS): $(SOURCES)
 	haxe -js $(JS) $(MAIN) -cp src $(RESOURCE) $(HAXEPARAMS)
 
-$(ASSETSDIR): $(TEMPLATESDIR)/*
+$(ASSETSDIR): $(TEMPLATESDIR)/* $(TEMPLATESDIR)/assets/*
 	rm -Rf $(ASSETSDIR)
 	cp -Rf templates/$(TEMPLATE)/assets/ $(ASSETSDIR)
 
