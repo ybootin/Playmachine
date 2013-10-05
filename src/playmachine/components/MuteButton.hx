@@ -47,7 +47,7 @@ class MuteButton extends Component
 
     private function onVolumeChange(evt:AudioEvent):Void
     {
-        if(evt.data.volume <= 0.1) {
+        if(evt.data.volume <= 0) {
             volumeBeforeMute = volume;
         }
 

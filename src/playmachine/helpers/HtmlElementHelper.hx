@@ -22,6 +22,11 @@ class HtmlElementHelper {
         return classes.split(" ");
     }
 
+    public static function hasClass(elt:HtmlElement,className:String):Bool
+    {
+        return elt.getAttribute('class').indexOf(className) > -1;
+    }
+
     public static function addClass(element:HtmlElement, className:String):HtmlElement {
         if (element.className.indexOf(className) == -1) {
             element.className += ' ' + className;
@@ -92,13 +97,16 @@ class HtmlElementHelper {
         return [_x, _y];
     }
 
-    public static function getPercentClick(el:HtmlElement,evt:MouseEvent):Float
+    public static function getPercentClick(el:HtmlElement,evt:MouseEvent):PercentClick
     {
         var offset:Array<Int> = getOffset(el);
-        var realX:Float = evt.clientX - offset[0];
-        var percentClick:Float = realX / el.offsetWidth;
 
-        return percentClick;
+        var output:PercentClick = {
+            "width" : (evt.clientX - offset[0]) / el.offsetWidth,
+            "height" : (evt.clientY - offset[1]) / el.offsetHeight
+        };
+
+        return output;
     }
 
     public static function appendSWF(elt:HtmlElement,src:String,width:Int,height:Int):Void
@@ -126,3 +134,9 @@ class HtmlElementHelper {
     }
 
 }
+
+typedef PercentClick = {
+    width:Float,
+    height:Float
+}
+

@@ -90,7 +90,7 @@ class SeekBar extends Component
 
         // use percent adapt for click on the playbar while loading not fully completed
         var percentAdapt = (isBufferBar ? 1 : (audioData.currentTime / audioData.duration * (1 /(audioData.percentLoaded / 100))));
-        var seekPercent:Float = target.getPercentClick(evt) * 100 * percentAdapt;
+        var seekPercent:Float = target.getPercentClick(evt).width * 100 * percentAdapt;
 
         application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.SEEK_REQUEST,seekPercent));
     }

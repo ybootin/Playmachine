@@ -168,14 +168,13 @@ html, head, body, .playMachine  {
     top: 3px;
     border:1px solid #000000;
     background-color: #3399CC;
+    width:47px;
 }
 
 .ControlBar .SoundLevel,
 .ControlBar .SoundLevel .level{
-    width: 45px;
     height: 6px;
-
-
+    z-index: 3;
 }
 .ControlBar .SoundLevel .knob {
     height: 12px;
@@ -186,6 +185,7 @@ html, head, body, .playMachine  {
     width: 4px;
     height: 6px;
     background-color:#000000;
+    z-index: 1;
 }
 
 .Footer .SeekBar {

@@ -28,30 +28,35 @@ class SoundLevel extends Component
 
         volume = Constants.DEFAULT_SOUND_LEVEL;
 
-        updateDisplay();
+        updateDisplay(volume);
 
+        application.addEventListener(AudioEvent.AUDIO_PLAY,onPlay,false);
         application.addEventListener(AudioEvent.AUDIO_VOLUMECHANGE,onVolumeChange,false);
 
-        element.addEventListener('mousedown', cast(onSoundDown), false);
-        element.addEventListener('click', cast(onSoundClick), false);
-        element.addEventListener('mouseup', cast(onSoundUp), false);
-        element.addEventListener('mousemove', cast(onSoundMove), false);
-
+        element.addEventListener('mousedown', cast(onSoundDown), true);
+        element.addEventListener('click', cast(onSoundClick), true);
+        element.addEventListener('mouseup', cast(onSoundUp), true);
+        element.addEventListener('mousemove', cast(onSoundMove), true);
     }
 
-    private function updateDisplay():Void
+    private function updateDisplay(volume:Float):Void
     {
-        var level:HtmlElement = element.getElementByClassName('level');
         var knob:HtmlElement = element.getElementByClassName('knob');
-
-        level.style.width = volume + "%";
+        var level:HtmlElement = element.getElementByClassName('level');
 
         var minPos = 0;
-        var maxPos = element.offsetWidth - (knob.offsetWidth / 2);
+        var maxPos = element.offsetWidth - knob.offsetWidth;
 
-        var newPos:Float = level.offsetWidth - (knob.offsetWidth / 2);
+        var newPos:Float = (element.offsetWidth * volume / 100) - knob.offsetWidth;
+
+        if(level.hasClass('horizontal')) {
+            newPos = (element.offsetHeight * volume / 100) - knob.offsetHeight;
+        }
+
         if(newPos < minPos) {
             newPos = minPos;
+
+            sendVolumeRequest(0);
         }
         if(newPos >= maxPos) {
             newPos = maxPos;
@@ -64,6 +69,11 @@ class SoundLevel extends Component
         application.dispatchEvent(new PlaymachineEvent(PlaymachineEvent.VOLUME_REQUEST, volumePercent));
     }
 
+    private function onPlay(evt:AudioEvent):Void
+    {
+        volume = evt.data.volume;
+        updateDisplay(evt.data.volume);
+    }
 
     private function onVolumeChange(evt:AudioEvent):Void
     {
@@ -73,7 +83,7 @@ class SoundLevel extends Component
 
         volume = evt.data.volume;
 
-        updateDisplay();
+        updateDisplay(volume);
     }
 
 
@@ -82,7 +92,8 @@ class SoundLevel extends Component
      * @param  {Event} evt: event fired
      * @return {Void}
      */
-    private function onSoundMove(evt:MouseEvent):Void {
+    private function onSoundMove(evt:MouseEvent):Void
+    {
         if (soundDragging)
         {
             onSoundClick(evt);
@@ -97,7 +108,6 @@ class SoundLevel extends Component
     private function onSoundDown(evt:MouseEvent):Void
     {
         soundDragging = true;
-        onSoundClick(evt);
     }
 
     /**
@@ -105,7 +115,8 @@ class SoundLevel extends Component
      * @param  {Event} evt: event fired
      * @return {Void}
      */
-    private function onSoundUp(evt:MouseEvent):Void {
+    private function onSoundUp(evt:MouseEvent):Void
+    {
         soundDragging = false;
     }
 
@@ -117,7 +128,15 @@ class SoundLevel extends Component
     private function onSoundClick(evt:MouseEvent):Void
     {
         var target:HtmlElement = cast(evt.target);
+        var percentClick:PercentClick = target.getPercentClick(evt);
 
-        sendVolumeRequest((target.getPercentClick(evt) * 100));
+        if(target.getAttribute('class') == "level") {
+            var f:Float = percentClick.width;
+            if(target.hasClass('horizontal')) {
+                f = percentClick.height;
+            }
+            var percent:Float = f * 100;
+            sendVolumeRequest(percent);
+        }
     }
 }
