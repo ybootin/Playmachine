@@ -19,20 +19,15 @@ class TrackImage extends Component
 
     override public function init():Void
     {
-        try {
-            if(Browser.document.getElementsByTagName('img').length > 0) {
-                image = cast(Browser.document.getElementsByTagName('img')[0]);
-            }
-            else {
-                image = cast(Browser.document.createElement('img'));
-                element.appendChild(image);
-            }
+        if(Browser.document.getElementsByTagName('img').length > 0) {
+            image = cast(Browser.document.getElementsByTagName('img')[0]);
+        }
+        else {
+            image = cast(Browser.document.createElement('img'));
+            element.appendChild(image);
+        }
 
-            application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
-        }
-        catch(e:Dynamic) {
-            //nothing
-        }
+        application.addEventListener(PlaymachineEvent.PLAY_TRACK_REQUEST,onTrackChange,false);
     }
 
     private function hide():Void

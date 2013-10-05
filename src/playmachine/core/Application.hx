@@ -92,7 +92,13 @@ class Application extends EventDispatcher implements IApplication
 
         //init component after all are instanciated
         for(i in 0...components.length) {
-            components[i].init();
+            try {
+                components[i].init();
+            }
+            catch(e:Dynamic) {
+                trace('error init component ' + e);
+            }
+
         }
 
         dispatchEvent(new ApplicationEvent(ApplicationEvent.APPLICATION_READY));
