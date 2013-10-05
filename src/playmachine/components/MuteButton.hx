@@ -41,13 +41,13 @@ class MuteButton extends Component
 
     private function updateButtonStatus():Void
     {
-       (volume == 0) ? element.addClass('muted') : element.removeClass('muted');
+       (volume <= 10) ? element.addClass('muted') : element.removeClass('muted');
     }
 
 
     private function onVolumeChange(evt:AudioEvent):Void
     {
-        if(evt.data.volume <= 0) {
+        if(evt.data.volume <= 0 && volume > 0) {
             volumeBeforeMute = volume;
         }
 

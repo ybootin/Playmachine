@@ -15,7 +15,6 @@ import js.html.MouseEvent;
 class SoundLevel extends Component
 {
     private var volume:Float;
-    private var volumeBeforeMute:Float;
 
     private var soundDragging:Bool;
 
@@ -53,7 +52,7 @@ class SoundLevel extends Component
             newPos = (element.offsetHeight * volume / 100) - knob.offsetHeight;
         }
 
-        if(newPos < minPos) {
+        if(newPos <= minPos) {
             newPos = minPos;
 
             sendVolumeRequest(0);
@@ -77,12 +76,7 @@ class SoundLevel extends Component
 
     private function onVolumeChange(evt:AudioEvent):Void
     {
-        if(evt.data.volume <= 0) {
-            volumeBeforeMute = volume;
-        }
-
         volume = evt.data.volume;
-
         updateDisplay(volume);
     }
 
@@ -108,6 +102,7 @@ class SoundLevel extends Component
     private function onSoundDown(evt:MouseEvent):Void
     {
         soundDragging = true;
+        onSoundClick(evt);
     }
 
     /**
@@ -118,6 +113,7 @@ class SoundLevel extends Component
     private function onSoundUp(evt:MouseEvent):Void
     {
         soundDragging = false;
+        onSoundClick(evt);
     }
 
     /**

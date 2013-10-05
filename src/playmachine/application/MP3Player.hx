@@ -148,7 +148,7 @@ class MP3Player extends Sprite
             }
 
             channel = audio.play((start != null ? start : lastPlayedTime));
-            setVolume(volume);
+            setVolume(volume,true);
 
             dispatchEventToExternal(AudioEvent.AUDIO_PLAY);
 
@@ -190,9 +190,9 @@ class MP3Player extends Sprite
      * Set the player volume
      * percent is a number between 0 and 100
      */
-    public function setVolume(percent:Float):Void
+    public function setVolume(percent:Float,?force = false):Void
     {
-        if(percent == volume) {
+        if(percent == volume && !force) {
             return;
         }
 
