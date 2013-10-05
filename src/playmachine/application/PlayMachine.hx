@@ -29,6 +29,8 @@ class PlayMachine extends Application
 			new playmachine.components.ControlBar(this,'ControlBar'),
 			new playmachine.components.PlaylistPanel(this,'PlaylistPanel'),
 			new playmachine.components.SeekBar(this,'SeekBar'),
+			new playmachine.components.SoundLevel(this,'SoundLevel'),
+			new playmachine.components.MuteButton(this,'MuteButton'),
 			new playmachine.components.TrackImage(this,'TrackImage')
 		];
 	}

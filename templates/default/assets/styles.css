@@ -145,7 +145,7 @@ html, head, body, .playMachine  {
 .ControlBar .forwardButton:hover {
     background-position: -50px -25px;
 }
-.ControlBar .muteButton {
+.ControlBar .MuteButton {
     position:absolute;
     right:64px;
     top: -6px;
@@ -153,16 +153,16 @@ html, head, body, .playMachine  {
     height: 25px;
     background-position: -125px 0px;
 }
-.ControlBar .muteButton:hover,
-.ControlBar .muteButton.muted {
+.ControlBar .MuteButton:hover,
+.ControlBar .MuteButton.muted {
     background-position: -100px 0px;
 }
 
-.ControlBar .muteButton.muted:hover {
+.ControlBar .MuteButton.muted:hover {
     background-position: -125px 0px;
 }
 
-.ControlBar .soundLevel {
+.ControlBar .SoundLevel {
     position: absolute;
     right: 12px;
     top: 3px;
@@ -170,14 +170,14 @@ html, head, body, .playMachine  {
     background-color: #3399CC;
 }
 
-.ControlBar .soundLevel,
-.ControlBar .soundLevel .level{
+.ControlBar .SoundLevel,
+.ControlBar .SoundLevel .level{
     width: 45px;
     height: 6px;
 
 
 }
-.ControlBar .soundLevel .knob {
+.ControlBar .SoundLevel .knob {
     height: 12px;
     width:12px;
     position:absolute;
