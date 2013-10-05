@@ -72,11 +72,13 @@ class SeekBar extends Component
 
     private function onProgress(evt:AudioEvent):Void
     {
+        audioData = evt.data;
         setProgressPosition(evt.data.percentPlayed);
     }
 
     private function onBuffer(evt:AudioEvent):Void
     {
+        audioData = evt.data;
         setBufferPositon(evt.data.percentLoaded);
     }
 
